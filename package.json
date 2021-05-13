@@ -1,0 +1,20 @@
+{
+  "name": "firstblog",
+  "version": "1.0.0",
+  "description": "This is my first blog!",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app"
+  },
+  "author": "djava",
+  "license": "ISC",
+  "dependencies": {
+    "@popperjs/core": "^2.9.2",
+    "bootstrap": "^4.6.0",
+    "express": "^4.17.1",
+    "jquery": "^3.6.0",
+    "method-override": "^3.0.0",
+    "mongoose": "^5.12.7",
+    "pug": "^3.0.2"
+  }
+}

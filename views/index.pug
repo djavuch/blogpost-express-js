@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    each article, i in articles
+        .blog-post
+            a(class= "blog-post-title" href= '/article/'+article._id)= article.title
+            #article-meta= article.createdAt.toLocaleDateString() 
+                span  by <strong><em>#{article.author}</em></strong>
+                #article-main= article.body
+            a.btn.btn-secondary.float-right(href='/article/'+article._id) Read more 
