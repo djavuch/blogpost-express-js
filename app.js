@@ -2,8 +2,13 @@ const express = require('express')
 const pug = require('pug')
 const path = require('path')
 const methodOverride = require('method-override')
+const flash = require('connect-flash')
+const session = require('express-session')
+const messages = require('express-messages')
+const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+
 
 mongoose.connect('mongodb://localhost/firstblog', { 
     useNewUrlParser: true, useUnifiedTopology: true
@@ -44,6 +49,21 @@ app.use('/dist/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'
 app.use('/dist/umd', express.static(__dirname + '/node_modules/@popperjs/core/dist/umd')) // popper
 app.use('/dist/jquery', express.static(__dirname + '/node_modules/jquery/dist')) // jquery
 app.use('/assets', express.static('assets'))
+
+// Express Session Middleware
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+}))
+
+// Express Messages Middleware
+app.use(require('connect-flash')())
+app.use(function (req, res, next) {
+    res.locals.messages = require('express-messages')(req, res)
+    next()
+})
 
 //Home Route
 app.get('/', function(req, res) {
