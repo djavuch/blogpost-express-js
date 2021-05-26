@@ -1,0 +1,4 @@
+.messages
+    each type in Object.keys(messages)
+        each message in messages[type]
+            .alert.alert-success(role='alert').mt-2 #{message}

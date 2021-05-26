@@ -1,18 +1,20 @@
+if(process.env.NODE_ENV !== 'production') {
+    require('dotenv').config()
+}
+
 const express = require('express')
 const pug = require('pug')
 const path = require('path')
 const methodOverride = require('method-override')
-const flash = require('connect-flash')
 const session = require('express-session')
-const messages = require('express-messages')
-const express = require('express')
+const flash = require('express-flash')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const passport = require('passport')
+const {check, validationResult} = require('express-validator')
+const config = require('./config/database')
 
-
-mongoose.connect('mongodb://localhost/firstblog', { 
-    useNewUrlParser: true, useUnifiedTopology: true
-})
+mongoose.connect(config.database)
 let db = mongoose.connection
 
 // Check DB connection
@@ -31,6 +33,7 @@ const port = 3000
 
 //Bring in Models
 let Article = require('./models/article')
+const { read } = require('@popperjs/core')
 
 //Load View Engine 
 app.set('views', path.join(__dirname, 'views'))
@@ -43,6 +46,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json())
 app.use(methodOverride('_method'))
 
+// Express Session Middleware
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+}))
+
 //Favicons & node_modules folders
 app.use('/dist/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')) // bootstrap css
 app.use('/dist/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'))  // bootstrap js
@@ -50,20 +60,12 @@ app.use('/dist/umd', express.static(__dirname + '/node_modules/@popperjs/core/di
 app.use('/dist/jquery', express.static(__dirname + '/node_modules/jquery/dist')) // jquery
 app.use('/assets', express.static('assets'))
 
-// Express Session Middleware
-app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }
-}))
+// Flash-express
+app.use(flash())
 
-// Express Messages Middleware
-app.use(require('connect-flash')())
-app.use(function (req, res, next) {
-    res.locals.messages = require('express-messages')(req, res)
-    next()
-})
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
 
 //Home Route
 app.get('/', function(req, res) {
@@ -140,9 +142,17 @@ app.post('/articles/add', (req, res) => {
             console.log(err)
             return
         } else {
+            req.flash('success', 'Article added')
             res.redirect('/')
         }
     })
 })
 
+// Route files
+//let articles = require('./routes/articles');
+let users = require('./routes/users');
+//app.use('/articles', articles);
+app.use('/users', users);
+
+// Start server
 app.listen(port, () => console.log(`App listening on port 3000`))
