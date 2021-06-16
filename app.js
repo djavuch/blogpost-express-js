@@ -9,13 +9,16 @@ const methodOverride = require('method-override')
 const session = require('express-session')
 const flash = require('express-flash')
 const mongoose = require('mongoose')
-const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const {check, validationResult} = require('express-validator')
 const config = require('./config/database')
 
 mongoose.connect(config.database)
 let db = mongoose.connection
+
+//Configure 
+
 
 // Check DB connection
 db.once('open', function() {
@@ -41,7 +44,7 @@ app.set('view engine', 'pug')
 
 // Body Parser Middleware
 // parse application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 // parse application/json
 app.use(express.json())
 app.use(methodOverride('_method'))
@@ -51,21 +54,27 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: { maxAge: 60 * 1000 } // 1 hour
 }))
+
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
+
+app.get('*', (req, res, next) => {
+    res.locals.user = req.user || null
+    next()
+})
 
 //Favicons & node_modules folders
 app.use('/dist/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')) // bootstrap css
 app.use('/dist/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'))  // bootstrap js
 app.use('/dist/umd', express.static(__dirname + '/node_modules/@popperjs/core/dist/umd')) // popper
 app.use('/dist/jquery', express.static(__dirname + '/node_modules/jquery/dist')) // jquery
-app.use('/assets', express.static('assets'))
+app.use('/assets', express.static('assets')) 
 
 // Flash-express
 app.use(flash())
-
-// Passport middleware
-app.use(passport.initialize())
-app.use(passport.session())
 
 //Home Route
 app.get('/', function(req, res) {
@@ -153,6 +162,13 @@ app.post('/articles/add', (req, res) => {
 let users = require('./routes/users');
 //app.use('/articles', articles);
 app.use('/users', users);
+
+app.get('/test-cockie', (req, res) => {
+    req.session.isAuth = true
+    console.log(req.session)
+    console.log(req.session.id)
+    res.send('Caboom')
+})
 
 // Start server
 app.listen(port, () => console.log(`App listening on port 3000`))

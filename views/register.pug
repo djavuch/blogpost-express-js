@@ -1,22 +1,41 @@
-extends layout
-
-block content
-    h1 Register
-    form(method='POST', action='/users/register')
-        #form-group
-            label Name:
-            input.form-control(name='name', type='text')
-        #form-group
-            label Email:
-            input.form-control(name='email', type='text')
-        #form-group
-            label Username:
-            input.form-control(name='username',type='text')
-        #form-group
-            label Password:
-            input.form-control(name='password',type='password')
-        #form-group
-            label Confirm:
-            input.form-control(name='password2',type='password')
-        br
-        input.btn.btn-primary(type='submit',value='Submit')
+html
+    head
+    link(href='https://use.fontawesome.com/releases/v5.8.2/css/all.css' rel='stylesheet')
+    link(href='/dist/css/bootstrap.min.css' rel='stylesheet')
+    link(href='/assets/styles/register.css' rel='stylesheet')
+    script(src='/dist/jquery/jquery.slim.min.js')
+    script(src='/dist/js/bootstrap.bundle.min.js')
+    title Blog about nothing and everything | Register
+    body
+        .container
+            .row
+                .col-sm-9.col-md-7.col-lg-5.mx-auto
+                    .card.card-signin.flex-row.my-5
+                        .card-body
+                            h5.card-title.text-center Register
+                            form.form-signin(method='POST', action='/users/register')
+                                .form-label-group
+                                    input#inputName.form-control(name='name' type='text' placeholder='Name' required='' autofocus='')
+                                    label(for='inputName') Name
+                                .form-label-group
+                                    input#inputUsername.form-control(name='username' type='text' placeholder='Username' required='' autofocus='')
+                                    label(for='inputUsername') Username
+                                .form-label-group
+                                    input#inputEmail.form-control(name='email' type='email' placeholder='Email address' required='')
+                                    label(for='inputEmail') Email address
+                                hr
+                                .form-label-group
+                                    input#inputPassword.form-control(name='password' type='password' placeholder='Password' required='')
+                                    label(for='inputPassword') Password
+                                .form-label-group
+                                    input#inputConfirmPassword.form-control(name='password2' type='password' placeholder='Password' required='')
+                                    label(for='inputConfirmPassword') Confirm password
+                                button.btn.btn-lg.btn-secondary.btn-block.text-uppercase(type='submit', value='Submit') Register
+                                a.d-block.text-center.mt-2.small(href='/users/login') Sign In
+                                hr.my-4
+                                button.btn.btn-lg.btn-google.btn-block.text-uppercase(type='submit')
+                                    i.fab.fa-google.mr-2
+                                    |  Sign up with Google
+                                button.btn.btn-lg.btn-facebook.btn-block.text-uppercase(type='submit')
+                                    i.fab.fa-facebook-f.mr-2
+                                    |  Sign up with Facebook

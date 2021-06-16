@@ -36,13 +36,18 @@ router.get('/login', async (req, res) =>{
     res.render('login')
 })
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', (req, res, next) => {
     passport.authenticate('local', {
         successRedirect: '/',
         failureRedirect: '/users/login',
-        failureFlash: true
+        failureFlash: true, 
     }) (req, res, next)
-    req.flash('success', 'You are logged in');
+})
+
+router.get('/logout', (req, res, next) => {
+    req.logOut()
+    req.flash('success', 'You are logged out')
+    res.redirect('/users/login')
 })
 
 module.exports = router

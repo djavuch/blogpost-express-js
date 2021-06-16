@@ -39,7 +39,7 @@ html(lang='en')
     // Custom styles for this template
     link(href='https://fonts.googleapis.com/css?family=Playfair+Display:700,900' rel='stylesheet')
     // Custom styles for this template
-    link(href='/assets/blog.css' rel='stylesheet')
+    link(href='/assets/styles/blog.css' rel='stylesheet')
   body
     .container
       include alert
@@ -48,14 +48,18 @@ html(lang='en')
           .col-4.pt-1
             a.text-muted(href='#') Subscribe
           .col-4.text-center
-            a.blog-header-logo.text-dark(href='#') Large
+            a.blog-header-logo.text-dark(href='/') Blog about nothing and everything
           .col-4.d-flex.justify-content-end.align-items-center
             a.text-muted(href='#' aria-label='Search')
               svg.mx-3(xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' role='img' viewBox='0 0 24 24' focusable='false')
                 title Search
                 circle(cx='10.5' cy='10.5' r='7.5')
                 path(d='M21 21l-5.2-5.2')
-            a.btn.btn-sm.btn-outline-secondary(href='#') Sign up
+            if user      
+              a.btn.btn-sm.btn-outline-secondary(href='/users/logout') Logout
+            else 
+              a.btn.btn-sm.btn-outline-secondary(href='/users/login') Login
+              a.btn.btn-sm.btn-outline-secondary(href='/users/register') Register
       .nav-scroller.py-1.mb-2
         nav.nav.d-flex.justify-content-between
           a.p-2.text-muted(href='#') World
