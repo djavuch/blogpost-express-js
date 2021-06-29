@@ -1,4 +1,4 @@
-if(process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
@@ -12,7 +12,7 @@ const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const MongoStore = require('connect-mongo')
-const {check, validationResult} = require('express-validator')
+const { check, validationResult } = require('express-validator')
 const mongoDatabase = require('./config/database')
 
 //Connection to DB
@@ -45,7 +45,7 @@ app.use(
         saveUninitialized: true,
         store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/firstblog' }),
         cookie: { maxAge: 60 * 10000 } // 1 hour
-}))
+    }))
 
 // Passport middleware
 app.use(passport.initialize())
@@ -62,20 +62,39 @@ app.use('/dist/css', express.static(__dirname + '/node_modules/bootstrap/dist/cs
 app.use('/dist/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'))  // bootstrap js
 app.use('/dist/umd', express.static(__dirname + '/node_modules/@popperjs/core/dist/umd')) // popper
 app.use('/dist/jquery', express.static(__dirname + '/node_modules/jquery/dist')) // jquery
-app.use('/assets', express.static('assets')) 
+app.use('/assets', express.static('assets'))
 
 // Flash-express
 app.use(flash())
 
 //Home Route
-app.get('/', function(req, res) {
-    Article.find({}, function(err, articles) {
-        if(err){
-            console.log(err)
-        } else {
+app.get('/', function (req, res) {
+
+    const { page } = req.query;
+    const options = {
+        page: parseInt(page, 10) || 1,
+        limit: 15
+    }
+    // Article.find({}, function(err, articles) {
+    //     if(err){
+    //         console.log(err)
+    //     } else {
+    //         res.render('index', {
+    //             title: 'Articles',
+    //             articles: articles    
+    //         })
+    //     }
+    // })
+
+    Article.paginate({}, options).then((articles, err) => {
+        if (!err) {
             res.render('index', {
                 title: 'Articles',
-                articles: articles    
+                articles: articles.docs,
+                hasNextPage: articles.hasNextPage,
+                hasPrevPage: articles.hasPrevPage,
+                currentPage: articles.page, 
+                totalPages: articles.totalPages
             })
         }
     })
@@ -83,7 +102,7 @@ app.get('/', function(req, res) {
 
 //Get single Article
 app.get('/article/:id', (req, res) => {
-    Article.findById(req.params.id, function(err, article) {
+    Article.findById(req.params.id, function (err, article) {
         res.render('article', {
             article: article
         })
@@ -91,7 +110,7 @@ app.get('/article/:id', (req, res) => {
 })
 
 // Delete Article
-app.delete('/article/:id', async(req, res) => {
+app.delete('/article/:id', async (req, res) => {
     await Article.findByIdAndDelete(req.params.id)
     res.redirect('/')
 })
@@ -103,10 +122,10 @@ app.get('/articles/add', (req, res) => res.render('add_article', {
 
 //Load Edit Page
 app.get('/article/edit/:id', (req, res) => {
-    Article.findById(req.params.id, function(err, article) {
+    Article.findById(req.params.id, function (err, article) {
         res.render('edit_article', {
             title: 'Edit Article',
-            article:article
+            article: article
         })
     })
 })
@@ -118,10 +137,10 @@ app.post('/articles/edit/:id', (req, res) => {
     article.author = req.body.author
     article.body = req.body.body
 
-    let query = {_id:req.params.id}
+    let query = { _id: req.params.id }
 
-    Article.update(query, article, function(err) {
-        if(err){
+    Article.update(query, article, function (err) {
+        if (err) {
             console.log(err)
             return
         } else {
@@ -137,8 +156,8 @@ app.post('/articles/add', (req, res) => {
     article.author = req.body.author
     article.body = req.body.body
 
-    article.save(function(err) {
-        if(err){
+    article.save(function (err) {
+        if (err) {
             console.log(err)
             return
         } else {

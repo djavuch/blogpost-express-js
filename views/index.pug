@@ -8,3 +8,12 @@ block content
                 span  by <strong><em>#{article.author}</em></strong>
                 #article-main= article.body
             a.btn.btn-secondary.float-right(href='/article/'+article._id) Read more 
+    nav.blog-pagination
+            if hasPrevPage
+                a.btn.btn-outline-primary.m-1(href=`/?page=${currentPage-1}`) Older
+            else 
+                a.btn.btn-outline-secondary.disabled.m-1(href='#') Older
+            if hasNextPage
+                a.btn.btn-outline-primary.m-1(href=`/?page=${currentPage+1}` tabindex='-1' aria-disabled='true') Newer
+            else
+                a.btn.btn-outline-secondary.disabled.m-1(href='#' tabindex='-1' aria-disabled='true') Newer
