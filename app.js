@@ -11,24 +11,12 @@ const flash = require('express-flash')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 const passport = require('passport')
+const MongoStore = require('connect-mongo')
 const {check, validationResult} = require('express-validator')
-const config = require('./config/database')
+const mongoDatabase = require('./config/database')
 
-mongoose.connect(config.database)
-let db = mongoose.connection
-
-//Configure 
-
-
-// Check DB connection
-db.once('open', function() {
-    console.log('Connected to MongoDB')
-})
-
-//Check DB errors
-db.on('error', function(err) {
-    console.log(err)
-})
+//Connection to DB
+mongoDatabase()
 
 //Init App
 const app = express()
@@ -44,22 +32,25 @@ app.set('view engine', 'pug')
 
 // Body Parser Middleware
 // parse application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 // parse application/json
 app.use(express.json())
 app.use(methodOverride('_method'))
 
 // Express Session Middleware
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 60 * 1000 } // 1 hour
+app.use(
+    session({
+        secret: 'boooom',
+        resave: false,
+        saveUninitialized: true,
+        store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/firstblog' }),
+        cookie: { maxAge: 60 * 10000 } // 1 hour
 }))
 
 // Passport middleware
 app.use(passport.initialize())
 app.use(passport.session())
+require('./middleware/passport-config')
 
 app.get('*', (req, res, next) => {
     res.locals.user = req.user || null
@@ -159,16 +150,15 @@ app.post('/articles/add', (req, res) => {
 
 // Route files
 //let articles = require('./routes/articles');
-let users = require('./routes/users');
+let users = require('./routes/users')
 //app.use('/articles', articles);
-app.use('/users', users);
+app.use('/users', users)
 
-app.get('/test-cockie', (req, res) => {
-    req.session.isAuth = true
-    console.log(req.session)
-    console.log(req.session.id)
-    res.send('Caboom')
-})
+// app.get('/data-test', (req, res) => {
+//     const now = new Date()
+//     console.log(now);
+//     res.send('boom')
+// })
 
 // Start server
-app.listen(port, () => console.log(`App listening on port 3000`))
+app.listen(port, () => console.log(`App listening on port ${port}`))

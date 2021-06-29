@@ -4,13 +4,6 @@ const passport = require('passport');
 const bcrypt = require('bcrypt')
 const { User } = require('../models/user');
 
-const initializePassport = require('../middleware/passport-config')
-initializePassport(
-    passport,
-    username => User.findOne({username: username}),
-    id => User.findOne({id: id})
-)
-
 router.get('/register', async (req, res) =>{
     res.render('register')
 })
@@ -27,8 +20,9 @@ router.post('/register', async (req, res) => {
         newUser.save()
         req.flash('success', 'You are now registered and can log in');
         res.redirect('/users/login')
-    } catch {
-        res.redirect('users/register')
+    } catch (err) {
+        console.log(err)
+        res.redirect('/users/register')
     }
 })
 
