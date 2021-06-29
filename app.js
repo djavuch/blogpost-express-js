@@ -73,18 +73,8 @@ app.get('/', function (req, res) {
     const { page } = req.query;
     const options = {
         page: parseInt(page, 10) || 1,
-        limit: 15
+        limit: 10
     }
-    // Article.find({}, function(err, articles) {
-    //     if(err){
-    //         console.log(err)
-    //     } else {
-    //         res.render('index', {
-    //             title: 'Articles',
-    //             articles: articles    
-    //         })
-    //     }
-    // })
 
     Article.paginate({}, options).then((articles, err) => {
         if (!err) {
