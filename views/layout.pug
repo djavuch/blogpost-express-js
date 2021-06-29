@@ -55,8 +55,9 @@ html(lang='en')
                 title Search
                 circle(cx='10.5' cy='10.5' r='7.5')
                 path(d='M21 21l-5.2-5.2')
-            if user      
-              a.btn.btn-sm.btn-outline-secondary(href='/users/logout') Logout
+            if user
+              a.btn.btn-sm.btn-outline-secondary.m-1(href='/articles/add') Add Post      
+              a.btn.btn-sm.btn-outline-secondary.m-1(href='/users/logout') Logout
             else 
               a.btn.btn-sm.btn-outline-secondary(href='/users/login') Login
               a.btn.btn-sm.btn-outline-secondary(href='/users/register') Register
