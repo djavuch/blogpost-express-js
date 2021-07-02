@@ -24,3 +24,5 @@ let articleSchema = mongoose.Schema({
 articleSchema.plugin(mongoosePaginate)
 
 let Article = module.exports = mongoose.model('Article', articleSchema)
+// const Article = mongoose.model('Article', articleSchema)
+// module.exports.Article = Article

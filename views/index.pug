@@ -3,8 +3,35 @@ extends layout
 block content
     each article, i in articles
         .blog-post
-            a(class= "blog-post-title" href= '/article/'+article._id)= article.title
+            a(class= "blog-post-title" href= '/articles/'+article._id)= article.title
             #article-meta= article.createdAt.toLocaleDateString() 
                 span  by <strong><em>#{article.author}</em></strong>
                 #article-main= article.body
-            a.btn.btn-secondary.float-right(href='/article/'+article._id) Read more 
+            a.btn.btn-secondary.float-right(href='/articles/'+article._id) Read more
+    nav(aria-label='Page navigation example')
+        ul.pagination.justify-content-center
+            if hasPrevPage
+                li.page-item
+                    a.page-link(href=`/?page=${currentPage-1}`) Previous
+            else
+                li.page-item.disabled
+                    a.page-link(href='#' tabindex='-1' aria-disabled='true') Previous
+            li.page-item.active 
+                - pageCounterBeforeCurrentPage= 0
+                    while pageCounterBeforeCurrentPage < currentPage - 1
+                        - pageCounterBeforeCurrentPage= pageCounterBeforeCurrentPage + 1
+                            li.page-item
+                                a.page-link(href=`/?page=${pageCounterBeforeCurrentPage}`)= pageCounterBeforeCurrentPage
+            li.page-item.active
+                a.page-link(href='#')= currentPage
+                - pageCounterAfterCurrentPage= currentPage
+                    while pageCounterAfterCurrentPage < totalPages
+                        - pageCounterAfterCurrentPage= pageCounterAfterCurrentPage + 1
+                            li.page-item
+                                a.page-link(href=`/?page=${pageCounterAfterCurrentPage}`)= pageCounterAfterCurrentPage
+            if hasNextPage
+                li.page-item
+                    a.page-link(href=`/?page=${currentPage+1}`) Next
+            else
+                li.page-item.disabled
+                    a.page-link(href='#' tabindex='-1' aria-disabled='true') Next
