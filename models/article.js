@@ -19,6 +19,10 @@ let articleSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    ownerId: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User'
+    }
 })
 
 articleSchema.plugin(mongoosePaginate)

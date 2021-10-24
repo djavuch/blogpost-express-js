@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const Article = require('../models/article')
-const { User } = require('../models/user')
+const User = require('../models/user')
 
 //Add Route
 router.get('/add', (req, res) => res.render('add_article', {
@@ -32,7 +32,7 @@ router.get('/edit/:id', (req, res) => {
     Article.findById(req.params.id, function(err, article) {
         res.render('edit_article', {
             title: 'Edit Article',
-            article:article
+            article: article
         })
     })
 })
