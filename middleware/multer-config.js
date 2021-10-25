@@ -1,31 +1,23 @@
 const multer = require('multer')
 const path = require('path')
-const {GridFsStorage} = require("multer-gridfs-storage")
 
-const storage = new GridFsStorage({
-    url: process.env.MONGO_URI,
-    options: { useNewUrlParser: true, useUnifiedTopology: true },
-    file: (req, file) => {
-        const match = ["image/png", "image/jpeg", "image/jpg"]
-
-        if(match.indexOf(file.mimetype) === -1) {
-            const filename = `${Date.now()}_${file.originalname}`
-            return filename
-        }
-        
-        return {
-            bucketName: "avatars",
-            filename: `${Date.now()}_${file.originalname}`
-        }
+const storage = multer.diskStorage({
+    destination(req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename(req, file, cb) {
+        cb(null, file.originalname)
     }
 })
 
-// const upload = multer({ 
-//     storage: storage,
-//     limits: {
-//         fileSize: 1024 * 1024 * 2
-//     },
-//     fileFilter: fileFilter
-// })
+const types = ['image/png', 'image/jpeg', 'image/jpg']
 
-module.exports = multer({ storage : storage })
+const fileFilter = (req, file, cb) => {
+    if(types.includes(file.mimetype)) {
+        cb(null, true)
+    } else {
+        cb(null, false)
+    }
+}
+
+module.exports = multer({storage, fileFilter})

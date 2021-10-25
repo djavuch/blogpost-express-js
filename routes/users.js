@@ -61,8 +61,9 @@ router.get('/edit/:id', async (req, res) => {
 
 // Public profile
 router.get('/:username', async (req, res) => {
+    console.log(req.file)
     const user = await User.findOne({username: req.params.username})
-    if (user == null) res.redirect('/')
+    if (user === null) res.redirect('/')
     res.render('user_profile', { user: user })
 })
 
@@ -75,8 +76,8 @@ router.put('/:id', upload.single('avatar'), async (req, res, next) => {
 function saveUser(path) {
     return async (req, res) => {
         let user = req.user
-        user.name = req.body.name,
-        user.avatar = req.file.filename,
+        user.avatar = req.file,
+        user.username = req.body.username,
         user.about = req.body.about,
         user.twitter = req.body.twitter,
         user.facebook = req.body.facebook,
