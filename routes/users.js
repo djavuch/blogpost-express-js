@@ -10,13 +10,13 @@ router.get('/register', async (req, res) =>{
     res.render('register')
 })
 
-// Edit profile (load form)
-router.get('/edit/:id', async (req, res) => {
-    const user = await User.findById(req.params.id) 
-    res.render('edit_profile', {
-        user: user
-    })
-})
+// // Edit profile (load form)
+// router.get('/edit/:id', async (req, res) => {
+//     const user = await User.findById(req.params.id) 
+//     res.render('edit_profile', {
+//         user: user
+//     })
+// })
 
 router.post('/register', async (req, res) => {
     try {
@@ -60,38 +60,62 @@ router.get('/edit/:id', async (req, res) => {
 })
 
 // Public profile
+// router.get('/:username', async (req, res) => {
+//     const userProfile = User.findOne({username: req.params.username})
+//     // if (user == null) res.redirect('/')
+//     res.render('user_profile', { user : userProfile })
+// })
+
 router.get('/:username', async (req, res) => {
-    console.log(req.file)
-    const user = await User.findOne({username: req.params.username})
-    if (user === null) res.redirect('/')
-    res.render('user_profile', { user: user })
+    User.findOne({username: req.params.username}, function(err, user) {
+        res.render('user_profile', {
+            user: user
+        })
+    })
 })
 
-router.put('/:id', upload.single('avatar'), async (req, res, next) => {
-    req.user = await User.findById(req.params.id)
-    next()
-    console.log(req.file)
-}, saveUser('edit_profile'))
+router.post('/edit/:id', async (req, res) => {
+    fetchUser = await User.findById(req.params.id)
 
-function saveUser(path) {
-    return async (req, res) => {
-        let user = req.user
-        user.avatar = req.file,
-        user.username = req.body.username,
-        user.about = req.body.about,
-        user.twitter = req.body.twitter,
-        user.facebook = req.body.facebook,
-        user.instagram = req.body.instagram,
-        user.reddit = req.body.reddit,
-        user.github = req.body.github
+    // let user = req.user
+    fetchUser.name = req.body.name
+    // fetchUser.username = req.body.username
+    fetchUser.about = req.body.about
+    fetchUser.twitter = req.body.twitter
+    fetchUser.facebook = req.body.facebook
+    fetchUser.instagram = req.body.instagram
+    fetchUser.reddit = req.body.reddit
+    fetchUser.github = req.body.github
 
         try {
-            user = await user.save()
-            res.redirect(`/users/${user.username}`)
+            fetchUser = await fetchUser.save()
+            res.redirect(`/users/${fetchUser.username}`)
         } catch (e) {
-            res.render(`${path}`, { user : user})
+            console.log(e)
+            res.redirect('/')
         }
-    }
-}
+    })
+    // next()
+
+// function saveUser(path) {
+//     return async (req, res) => {
+//         let user = req.user
+//         user.name = req.body.name
+//         user.username = req.body.username
+//         user.about = req.body.about
+//         user.twitter = req.body.twitter
+//         user.facebook = req.body.facebook
+//         user.instagram = req.body.instagram
+//         user.reddit = req.body.reddit
+//         user.github = req.body.github
+
+//         try {
+//             user = await user.save()
+//             res.redirect(`/users/${user.username}`)
+//         } catch (e) {
+//             res.render(`${path}`, { user: user})
+//         }
+//     }
+// }
 
 module.exports = router

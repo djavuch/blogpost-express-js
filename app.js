@@ -76,7 +76,7 @@ app.use('/dist/umd', express.static(__dirname + '/node_modules/@popperjs/core/di
 app.use('/dist/jquery', express.static(__dirname + '/node_modules/jquery/dist')) // jquery
 app.use('/dist/fontawesome', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/css'))
 app.use('/assets', express.static('assets')) 
-app.use('/uploads', express.static(path.join(__dirname, 'images')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Flash-express
 app.use(flash())

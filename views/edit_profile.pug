@@ -12,7 +12,7 @@ html
         title Edit #{user.username} profile
     body
         .container.rounded.bg-white.mt-5.mb-5
-            form(method='POST' enctype='multipart/form-data' action='/users/'+ user.id + "?_method=PUT")
+            form(method='POST' action='/users/edit/' + user.id)
                 .row
                     .col-md-3.border-right
                         .d-flex.flex-column.align-items-center.text-center.p-3.py-5
