@@ -5,6 +5,5 @@ package-lock.json
 *.gz
 
 .env
-/config/database.js
 
 

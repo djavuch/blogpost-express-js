@@ -12,18 +12,10 @@ const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const methodOverride = require('method-override')
 const MongoStore = require('connect-mongo')
-const mongoDatabase = require('./config/database')
-const AdminBro = require('admin-bro')
-const AdminBroExpressjs = require('@admin-bro/express')
-const AdminBroMongoose = require('@admin-bro/mongoose')
-
-// Route files
-let articles = require('./routes/articles')
-let users = require('./routes/users')
-let adminRouter = require('./routes/admin.route')
+const connectMongooseToDB = require('./config/database')
 
 //Connection to DB
-mongoDatabase()
+connectMongooseToDB(process.env.MONGO_URI)
 
 //Init App
 const app = express()
@@ -37,8 +29,6 @@ const { read } = require('@popperjs/core')
 //Load View Engine 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
-
-app.use('/admin', adminRouter)
 
 // Body Parser Middleware
 // parse application/x-www-form-urlencoded
@@ -104,89 +94,9 @@ app.get('/', function(req, res) {
     })
 })
 
-// // Admin Route
-// AdminBro.registerAdapter(AdminBroMongoose)
-
-// const canModifyUsers = ({ currentAdmin }) => currentAdmin && currentAdmin.role === 'admin'
-
-// const canEditArticle = ({ currentAdmin, record }) => {
-//     return currentAdmin && (currentAdmin.role === 'admin' 
-//     || currentAdmin._id === record.param('ownerId'))
-// }
-
-// const adminBro = new AdminBro({
-//     resource: [{User,
-//         options: { 
-//             properties: {
-//                 encryptedPassword: {
-//                     isVisible: false,
-//                 },
-//                 password: {
-//                     type: 'string',
-//                     isVisible: {
-//                         list: false, edit: true, filter: false, show: false,
-//                     },
-//                 },
-//             },
-//             actions: {
-//                 new: {
-//                     before: async (request) => {
-//                         if(request.payload.record.password) {
-//                             request.payload.record = {
-//                                 ...request.payload.record,
-//                                 encryptedPassword: await bcrypt.hash(request.payload.record.password, 10),
-//                                 password: undefined,
-//                             }
-//                         }
-//                         return request
-//                     },
-//                 },
-//                 edit: {isAccessible: canModifyUsers},
-//                 delete: {isAccessible: canModifyUsers},
-//                 new: {isAccessible: canModifyUsers},
-//             }
-//         }
-//     },
-//     {
-//         resource: Article,
-//         options: {
-//             properties: {
-//                 ownerId: { isVisible: { edit: false, show: true, list: true, filter: true } }
-//             },
-//             actions: {
-//                 edit: { isAccessible: canEditArticle },
-//                 delete: { isAccessible: canEditArticle},
-//                 new: {
-//                     before: async (request, { currentAdmin }) => {
-//                         request.payload.record = {
-//                             ...request.payload.record,
-//                             ownerId: currentAdmin._id,
-//                         }
-//                         return request
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// ],
-//     rootPath: '/admin'
-// })
-
-// const router = AdminBroExpressjs.buildAuthenticatedRouter(adminBro, {
-//     authenticate: async (username, password) => {
-//         const user = await User.findOne({ username })
-//         if (user) {
-//             const matched = await bcrypt.compare(password, user.encryptedPassword)
-//             if (matched) {
-//                 return user
-//             }
-//         }
-//         return false
-//     },
-//     cookiePassword: 'some-secret-password-used-to-secure-cookie',
-// })
-
-// app.use(adminBro.options.rootPath, router)
+// Route files
+let articles = require('./routes/articles')
+let users = require('./routes/users')
 
 // Mount routes
 app.use('/articles', articles)

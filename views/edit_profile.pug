@@ -6,18 +6,15 @@ html
         link(href='/dist/css/bootstrap.min.css' rel='stylesheet')
         link(href='/assets/styles/login.css' rel='stylesheet')
         link(rel='stylesheet' href='/assets/styles/edit_user_profile.css')
-        link(rel='stylesheet' href='/assets/styles/avatar_wrapper.css')
         script(src='/dist/jquery/jquery.slim.min.js')
         script(src='/dist/js/bootstrap.bundle.min.js')
         title Edit #{user.username} profile
     body
         .container.rounded.bg-white.mt-5.mb-5
-            form(method='POST' action='/users/edit/' + user.id)
+            form(method='POST' action='/users/' + user.id + '?_method=PUT')
                 .row
                     .col-md-3.border-right
                         .d-flex.flex-column.align-items-center.text-center.p-3.py-5
-                            input(type='file', name='avatar')
-                            input(type='submit', name='uploadimage', value='Upload Image')
                             span.font-weight-bold #{user.username}
                             span.text-black-50 amelly12@bbb.com
                             span          
