@@ -56,14 +56,18 @@ router.get('/logout', (req, res, next) => {
 
 router.get('/edit/:id', async (req, res) => {
     const user = await User.findById(req.params.id)
-    res.render('edit_profile', { user: user })
+    res.render('edit_profile', { 
+        user: user 
+    })
 })
 
 // Public profile
 router.get('/:username', async (req, res) => {
     const user = await User.findOne({username: req.params.username})
     if (user == null) res.redirect('/')
-    res.render('user_profile', { user : user })
+    res.render('user_profile', { 
+        user : user 
+    })
 })
 
 // router.get('/:username', async (req, res) => {
@@ -74,8 +78,8 @@ router.get('/:username', async (req, res) => {
 //     })
 // })
 
-router.put('/:id', async (req, res, next) => {
-    req.user = await User.findById(req.params.id)
+router.post('/:id', upload.single('avatar'), async (req, res, next) => {
+    req.user = await User.findById(req.params.id),
     next()
 }, saveUser('edit_profile'))
 
@@ -89,12 +93,13 @@ function saveUser(path) {
         user.instagram = req.body.instagram
         user.reddit = req.body.reddit
         user.github = req.body.github
+        user.avatar = req.file.filename    
 
         try {
             user = await user.save()
             res.redirect(`/users/${user.username}`)
         } catch (e) {
-            res.render(`/${path}`, { user : user})
+            res.render(`${path}`, { user : user})
         }
     }
 }

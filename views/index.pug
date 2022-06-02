@@ -1,39 +1,49 @@
 extends layout
 
 block content
-    each article, i in articles
-        .blog-post
-            a(class= "blog-post-title" href= '/articles/'+article._id)= article.title
-            #article-meta= article.createdAt.toLocaleDateString() 
-                span  by <strong><em>#{article.author}</em></strong>
-                #article-main= article.body
-            a.btn.btn-secondary.float-right(href='/articles/'+article._id) Read more
-    nav(aria-label='Page navigation example')
-        ul.pagination.justify-content-center
-            if hasPrevPage
-                li.page-item
-                    a.page-link(href=`/?page=${currentPage-1}`) Previous
-            else
-                li.page-item.disabled
-                    a.page-link(href='#' tabindex='-1' aria-disabled='true') Previous
-            //Previous page logic
-            li.page-item
-                - pageCounterBeforeCurrentPage= 0
-                while pageCounterBeforeCurrentPage < currentPage - 1
-                    - pageCounterBeforeCurrentPage= pageCounterBeforeCurrentPage + 1
-                        li.page-item
-                            a.page-link(href=`/?page=${pageCounterBeforeCurrentPage}`)= pageCounterBeforeCurrentPage
-            //Current page logic
-            li.page-item.active
-                a.page-link(href='#')= currentPage
-                - pageCounterAfterCurrentPage= currentPage
-                while pageCounterAfterCurrentPage < totalPages
-                    - pageCounterAfterCurrentPage= pageCounterAfterCurrentPage + 1
-                        li.page-item
-                            a.page-link(href=`/?page=${pageCounterAfterCurrentPage}`)= pageCounterAfterCurrentPage
-            if hasNextPage
-                li.page-item
-                    a.page-link(href=`/?page=${currentPage+1}`) Next
-            else
-                li.page-item.disabled
-                    a.page-link(href='#' tabindex='-1' aria-disabled='true') Next
+    .row
+        .col-md-4.news-block
+            h3.pb-4.mb-4.font-italic.border-bottom
+                | Newswire
+            each news, i in newswire
+                .blog-post
+                    #news-meta= news.created_on.toLocaleDateString() 
+                    a(class= "blog-post-title" href= '/news/' + news._id)= news.title
+        .col-md-4.article-block
+            h3.pb-4.mb-4.font-italic.border-bottom
+                | Personal blog
+            each article, i in articles
+                .blog-post
+                    #article-meta= article.created_on.toLocaleDateString() 
+                    a(class= "blog-post-title" href= '/articles/' + article._id)= article.title
+        include sidebar
+
+    //- nav(aria-label='Page navigation example')
+    //-     ul.pagination.justify-content-center
+    //-         if hasPrevPage
+    //-             li.page-item
+    //-                 a.page-link(href=`/?page=${currentPage-1}`) Previous
+    //-         else
+    //-             li.page-item.disabled
+    //-                 a.page-link(href='#' tabindex='-1' aria-disabled='true') Previous
+    //-         //Previous page logic
+    //-         li.page-item
+    //-             - pageCounterBeforeCurrentPage= 0
+    //-             while pageCounterBeforeCurrentPage < currentPage - 1
+    //-                 - pageCounterBeforeCurrentPage= pageCounterBeforeCurrentPage + 1
+    //-                     li.page-item
+    //-                         a.page-link(href=`/?page=${pageCounterBeforeCurrentPage}`)= pageCounterBeforeCurrentPage
+    //-         //Current page logic
+    //-         li.page-item.active
+    //-             a.page-link(href='#')= currentPage
+    //-             - pageCounterAfterCurrentPage= currentPage
+    //-             while pageCounterAfterCurrentPage < totalPages
+    //-                 - pageCounterAfterCurrentPage= pageCounterAfterCurrentPage + 1
+    //-                     li.page-item
+    //-                         a.page-link(href=`/?page=${pageCounterAfterCurrentPage}`)= pageCounterAfterCurrentPage
+    //-         if hasNextPage
+    //-             li.page-item
+    //-                 a.page-link(href=`/?page=${currentPage+1}`) Next
+    //-         else
+    //-             li.page-item.disabled
+    //-                 a.page-link(href='#' tabindex='-1' aria-disabled='true') Next

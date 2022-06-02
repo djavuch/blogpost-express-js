@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+    h1 #{title}
+    form(method='POST', action='/news/edit/' + news._id)
+        #form-group
+        label Title:
+        input.form-control(name='title', type='text', value=news.title)
+        #form-group
+        label Body:
+        textarea.form-control(name='body')= news.body
+        br
+        input.btn.btn-primary.m-1(type='submit',value='Submit')

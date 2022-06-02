@@ -2,8 +2,7 @@ const mongoose = require('mongoose')
 
 function connectMongooseToDB(uri) {
     mongoose.connect(uri, {
-        useNewUrlParser: true, useUnifiedTopology: true, 
-        useFindAndModify: false, useCreateIndex: true,
+        useNewUrlParser: true, useUnifiedTopology: true
     })
     .then((result) => 
     console.log("MongoDB connected to", result.connections[0].host)

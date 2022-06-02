@@ -1,0 +1,18 @@
+mixin replyToComments(comment) 
+    each comments, index_reply in comment.comments        
+        .d-flex.mt-4
+            .flex-shrink-0
+                img.rounded-circle(src='https://dummyimage.com/50x50/ced4da/6c757d.jpg' alt='...')
+            .ms-3
+                .fw-bold #{comments.author.username}
+                p= comments.text
+                    br
+                    p
+                        button.btn.btn-primary(type='button', data-toggle='collapse', data-target="#responseReply" + index_reply, aria-expanded='false', aria-controls='responseReply')
+                            | Reply      
+                    .collapse(id="responseReply" + index_reply)
+                        form.mb-4(method='POST', action=`/news/${news._id}/comments/${comments._id}/reply`)
+                            textarea.form-control(rows='3' name='text' type='comments' placeholder='Join the discussion and leave a comment!')
+                            input.btn-small.btn-primary.float-right(type='submit',value='Send')
+                +replyToComments(comments)
++replyToComments(comment)

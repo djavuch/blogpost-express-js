@@ -24,7 +24,7 @@ const port = 3000
 //Bring in Models
 const Article = require('./models/article')
 const User  = require('./models/user')
-const { read } = require('@popperjs/core')
+const News = require('./models/news')
 
 //Load View Engine 
 app.set('views', path.join(__dirname, 'views'))
@@ -43,7 +43,7 @@ app.use(
         resave: false,
         saveUninitialized: true,
         store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/firstblog' }),
-        cookie: { maxAge: 60 * 10000 } // 1 hour
+        cookie: { maxAge: 600 * 10000 } // 1 hour
 }))
 
 // Method override
@@ -62,8 +62,9 @@ app.get('*', (req, res, next) => {
 //Favicons & node_modules folders
 app.use('/dist/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')) // bootstrap css
 app.use('/dist/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'))  // bootstrap js
-app.use('/dist/umd', express.static(__dirname + '/node_modules/@popperjs/core/dist/umd')) // popper
+app.use('/dist/umd', express.static(__dirname + '/node_modules/popper.js/dist/umd')) // popper
 app.use('/dist/jquery', express.static(__dirname + '/node_modules/jquery/dist')) // jquery
+app.use('/dist/pace-js', express.static(__dirname + '/node_modules/pace-js')) // pace-js
 app.use('/dist/fontawesome', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/css'))
 app.use('/assets', express.static('assets')) 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -76,31 +77,44 @@ app.get('/', function(req, res) {
     const { page } = req.query
     const options = {
         page: parseInt(page, 10) || 1,
-        limit: 3
+        limit: 10
     }
 
     Article.paginate({}, options).then((articles, err) => {
-        if(!err) {
-            res.render('index', {
-                title: 'Articles',
-                articles: articles.docs,
-                hasNextPage: articles.hasNextPage,
-                hasPrevPage: articles.hasPrevPage,
-                currentPage: articles.page, 
-                totalPages: articles.totalPages,
-                pagingCounter: articles.pagingCounter
-            })
-        }
+        News.paginate({}, options).then((newswire, err) => {
+            if(!err) {
+                res.render('index', {
+                    title: 'Articles',
+                    newswire: newswire.docs,
+                    articles: articles.docs,
+                    hasNextPage: articles.hasNextPage,
+                    hasPrevPage: articles.hasPrevPage,
+                    currentPage: articles.page, 
+                    totalPages: articles.totalPages,
+                    pagingCounter: articles.pagingCounter
+                })
+            }
+        })
     })
 })
 
 // Route files
 let articles = require('./routes/articles')
 let users = require('./routes/users')
+let news = require('./routes/news')
+let admin = require('./routes/admin')
 
 // Mount routes
 app.use('/articles', articles)
 app.use('/users', users)
+app.use('/news', news)
+app.use('/admin', admin)
+
+//Error handler
+app.use(function (err, req, res, next) {
+    console.log(err.stack)
+    res.status(500).send('Something wrong')
+})
 
 // Start server
 app.listen(port, () => console.log(`App listening on port ${port}`))

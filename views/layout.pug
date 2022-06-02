@@ -9,10 +9,7 @@ html(lang='en')
     title Blog about nothing and everything
     // Bootstrap core CSS
     link(href='/dist/css/bootstrap.min.css' rel='stylesheet')
-    // JS 
-    script(src='/dist/jquery/jquery.min.js')
-    script(src='/dist/js/bootstrap.min.js')
-    script(src='/dist/umd/popper.js')
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet')
     // Favicons
     link(rel='apple-touch-icon' href='/assets/img/favicons/apple-touch-icon.png' sizes='180x180')
     link(rel='icon' href='/assets/img/favicons/favicon-32x32.png' sizes='32x32' type='image/png')
@@ -76,15 +73,9 @@ html(lang='en')
           a.p-2.text-muted(href='#') Travel
       include jumbotron
     main.container(role='main')
-      .row
-        .col-md-8.blog-main
-          h3.pb-4.mb-4.font-italic.border-bottom
-            | From the Firehose
-          block content
-          // /.blog-post
-        // /.blog-main
-        include sidebar
-        // /.blog-sidebar
-        // /.row
-        // /.container
+      block content
     include footer
+    // JS 
+    script(src='/dist/jquery/jquery.min.js')
+    script(src='/dist/umd/popper.min.js')
+    script(src='/dist/js/bootstrap.min.js')
