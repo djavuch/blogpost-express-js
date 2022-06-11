@@ -28,10 +28,7 @@ router.get('/:id', NewsController.getNews)
 // News comment section
 router.post('/:id/comments', CommentsOfNewsController.addComment)
 
-// Replies
-router.post('/:newsId/comments/:commentId/reply', CommentsOfNewsController.postReplyToComment)
-
 // Delete comments
-// router.delete('/:id/comments/:id', CommentsOfNewsController.deleteComment)
+router.delete('/:id/comments/:id', CommentsOfNewsController.deleteComment)
 
 module.exports = router

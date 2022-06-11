@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const Populate = require('../utils/autopopulate')
 const mongoosePaginate = require('mongoose-paginate-v2')
+const Comment = require('../models/comment')
 
 const newsSchema = new mongoose.Schema({
     title: {
@@ -31,6 +32,15 @@ const newsSchema = new mongoose.Schema({
 newsSchema
     .pre('findOne', Populate('author'))
     .pre('find', Populate('author')) 
+    // Delete comments with news
+    .pre('remove', async function(next) {
+        await Comment.remove({
+            "_id" : {
+                $in: this.comments
+            }
+        })
+        next()
+    })
 
 newsSchema.plugin(mongoosePaginate)
 

@@ -187,7 +187,24 @@ blog-post-title {
   color: #6b50a8;
   position: relative;
   text-decoration: none;
-  margin: -10px 0px 0px 0px;
+}
+
+.delete-btn {
+  text-shadow: 1px 1px 3px rgba(44, 42, 42, 0.863);
+  color: #6b50a8;
+  position: relative;
+  text-decoration: none;
+}
+
+#comments-btn {
+  width: 100%;
+  position: relative;
+  text-align: left;
+}
+
+.inner {
+  margin: -10px 10px 0px 0px;
+  display: inline-block;
 }
 
 .form-control {

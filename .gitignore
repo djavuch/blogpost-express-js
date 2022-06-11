@@ -3,6 +3,8 @@ node_modules
 package-lock.json
 *.log
 *.gz
+comment(from old schemas).pug
+reserve.js
 
 .env
 

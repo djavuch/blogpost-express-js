@@ -55,9 +55,9 @@ exports.editNews = function(req, res) {
 }
 
 // Delete news on POST
-exports.deleteNews =  function(req, res, next) {
+exports.deleteNews = function(req, res, next) {
     News.findById(req.params.id, function(err, news) {
-        if(err) return next(err)
+        if (err) return next(err)
         news.remove()
 
         req.flash('success', 'News deleted')

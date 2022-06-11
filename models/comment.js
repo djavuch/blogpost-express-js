@@ -9,28 +9,30 @@ const commentSchema = new mongoose.Schema({
         required: true 
     },
     commentText: {
-        type: String,
-        required: true
+        type: String
     },
     datePosted: {
         type: Date,
         default: Date.now()
     },
-    replies: [{
+    newsId: {
+        type: Schema.Types.ObjectId,
+        ref: 'News',
+        required: true
+    },
+    parentCommentId: {
         type: Schema.Types.ObjectId,
         ref: 'Comment'
-    }]
+    }
 }, 
     {   
         timestamps: {
-        createdAt: 'created_on', updatedAt: 'updated_on'
+            createdAt: 'created_on', updatedAt: 'updated_on'
     }
 })
 
 commentSchema
     .pre('findOne', Populate('author'))
     .pre('find', Populate('author'))
-    .pre('findOne', Populate('replies'))
-    .pre('find', Populate('replies'))
 
 module.exports = mongoose.model('Comment', commentSchema)
