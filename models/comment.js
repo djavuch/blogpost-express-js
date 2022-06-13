@@ -23,6 +23,17 @@ const commentSchema = new mongoose.Schema({
     parentCommentId: {
         type: Schema.Types.ObjectId,
         ref: 'Comment'
+    },
+    likes: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    dislikes: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    likeScore: {
+        type: Number
     }
 }, 
     {   

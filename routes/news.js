@@ -8,6 +8,7 @@ const Comment = require('../models/comment')
 // Require controlles
 const NewsController = require('../controllers/NewsController')
 const CommentsOfNewsController = require('../controllers/CommentsOfNewsController')
+const LikeDislikeSystemForNewsComments = require('../controllers/LikeDislikeSystemForNewsComments')
 
 // Newswire Controller
 const NewsArchive = require('../controllers/NewsArchive')
@@ -30,5 +31,9 @@ router.post('/:id/comments', CommentsOfNewsController.addComment)
 
 // Delete comments
 router.delete('/:id/comments/:id', CommentsOfNewsController.deleteComment)
+
+// Like Dislike button
+router.put('/:id/comments/:id/like', LikeDislikeSystemForNewsComments.giveLike)
+router.put('/:id/comments/:id/dislike', LikeDislikeSystemForNewsComments.giveDislike)
 
 module.exports = router

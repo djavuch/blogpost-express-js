@@ -10,13 +10,25 @@ block content
                 // Comment with nested comments
                 each comment, index_comment in news.comments
                     .d-flex.mb-4
-                        // Parent comment
                         .flex-shrink-0
                             img.rounded-circle(src='https://dummyimage.com/50x50/ced4da/6c757d.jpg' alt='...')
                         .ms-3
                             .fw-bold #{comment.author.username}
                             p= comment.commentText
+                                #rep-div
+                                    .inner-rep
+                                        form.like(data-page-id= news._id, data-id= comment._id)
+                                            button.btn.btn-success.btn-sm(type='submit')
+                                                i.fa.fa-thumbs-up(aria-hidden='true')
+                                    .span.vote-count(type='number' name='qty' value= likeScore)
+                                    .inner-rep
+                                        form.dislike(page-id= news._id, data-id= comment._id)
+                                            button.btn.btn-danger.btn-sm(type='submit')
+                                                i.fa.fa-thumbs-down(aria-hidden='true')
+                                                
+                                // Comments buttons
                                 #comments-btn
+                                    // Reply button
                                     .inner
                                         p.parent-comment-reply
                                             a.reply-link(type='button', data-toggle='collapse', data-target= "#response_" + index_comment, aria-expanded='false', aria-controls='response')
@@ -25,6 +37,7 @@ block content
                                             form.mb-4(method='POST' name='parentId' action=`/news/${news._id}/comments`)
                                                 textarea.form-control(rows='3' cols='150' name='commentText' type='reply' placeholder='Join the discussion and leave a comment!')
                                                 input.btn-small.btn-primary.float-right(type='submit' value='Send')
+                                    //Delete button
                                     .inner
                                         a.delete-btn(type='button' data-toggle='modal' data-target='#deleteComment')
                                             | Delete

@@ -7,6 +7,10 @@ exports.addComment = async function (req, res) {
     newsComment.author = req.user._id
     newsComment.newsId = req.params.id
 
+    newsComment.likes = []
+    newsComment.dislikes = []
+    newsComment.likeScore = 0
+
     if (req.body.parentId) {
         newsComment.parentCommentId = req.body.parentId
     }

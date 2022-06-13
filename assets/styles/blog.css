@@ -202,6 +202,16 @@ blog-post-title {
   text-align: left;
 }
 
+#rep-div {
+  position: absolute;
+  right: 10px; top: 200px;
+}
+
+.inner-rep {
+  margin: -10px 10px 0px 0px;
+  display: inline-block;
+}
+
 .inner {
   margin: -10px 10px 0px 0px;
   display: inline-block;
@@ -260,4 +270,23 @@ textarea.form-control {
 
 textarea {
   resize: vertical;
+}
+
+.vote-count {
+  position: relative;
+  background: #ECF0F1;
+  color: #5e7980;
+  font-weight: bolder;
+  font-size: 11pt;
+  display: inline-block;
+  padding: 3px 12px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.vote-count.vote-loading > span {
+  animation: 1s voteFadeOut;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }
