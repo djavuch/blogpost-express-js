@@ -1,0 +1,59 @@
+extends layouts/_layout.pug
+
+block variables
+	- var activePage = 'form-components'
+	- var activeGroup = 'forms'
+
+block title
+	title Form Components - Vali Admin
+
+block content
+	.app-title
+		div
+			h1
+				i.fa.fa-edit
+				|  Adding news
+			p Bootstrap default form components
+
+		ul.app-breadcrumb.breadcrumb
+			li.breadcrumb-item
+				i.fa.fa-home.fa-lg
+			li.breadcrumb-item
+				| Forms
+			li.breadcrumb-item
+				a(href="#") Form Components
+
+	.row
+		.col-md-12
+			.tile
+				form(method='post', action='/admin/news/edit/' + news._id)
+					.form-group
+						label(for='exampleInputEmail1') News title
+						input#exampleInputEmail1.form-control(name='title', type='text', value=news.title)
+						small#emailHelp.form-text.text-muted Come up with the most concise title to attract the reader. Remember, clickbait is punishable!
+					.form-group
+						label(for='exampleSelect1') Select category
+						select#exampleSelect1.form-control
+							option 1
+							option 2
+							option 3
+							option 4
+							option 5
+					.form-group
+						label(for='exampleSelect2') Select additional category
+						select#exampleSelect2.form-control(multiple='')
+							option 1
+							option 2
+							option 3
+							option 4
+							option 5
+					.form-group
+						label(for='textarea') Example textarea
+						textarea#my-expressjs-tinymce-app.form-control(name='body', rows='3')= news.body
+					.form-group
+						label(for='exampleInputFile') File input
+						input#exampleInputFile.form-control-file(type='file', aria-describedby='fileHelp')
+						small#fileHelp.form-text.text-muted
+							| This is some placeholder block-level help text for the above input. It's a bit lighter and easily wraps to a new line.
+					.tile-footer
+						button.btn.btn-primary(type='submit') Submit

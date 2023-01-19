@@ -1,0 +1,42 @@
+extends ../layout
+
+block content 
+    .row
+        .col-md-8.news-block
+            h3.pb-4.mb-4.font-italic.border-bottom
+                | Newswire
+            each news, i in newswire
+                .blog-post
+                    #news-meta= news.created_on.toLocaleDateString() 
+                    a(class= "blog-post-title" href= '/news/' + news._id)= news.title
+        include ../sidebar
+    //Navigation block
+    nav(aria-label='News navigation')
+    ul.pagination.justify-content-center
+        if hasPrevPage
+            li.page-item
+                a.page-link(href=`/news/newswire/?page=${currentPage - 1}`) Previous
+        else
+            li.page-item.disabled
+                a.page-link(href='#' tabindex='-1' aria-disabled='true') Previous
+        //Previous page logic
+        li.page-item
+            - pageCounterBeforeCurrentPage= 0
+            while pageCounterBeforeCurrentPage < currentPage - 1
+                - pageCounterBeforeCurrentPage= pageCounterBeforeCurrentPage + 1
+                    li.page-item
+                        a.page-link(href=`/news/newswire/?page=${pageCounterBeforeCurrentPage}`)= pageCounterBeforeCurrentPage
+        //Current page logic
+        li.page-item.active
+            a.page-link(href='#')= currentPage
+            - pageCounterAfterCurrentPage= currentPage
+            while pageCounterAfterCurrentPage < totalPages
+                - pageCounterAfterCurrentPage= pageCounterAfterCurrentPage + 1
+                    li.page-item
+                        a.page-link(href=`/news/newswire/?page=${pageCounterAfterCurrentPage}`)= pageCounterAfterCurrentPage
+        if hasNextPage
+            li.page-item
+                a.page-link(href=`/news/newswire/?page=${currentPage +1 }`) Next
+        else
+            li.page-item.disabled
+                a.page-link(href='#' tabindex='-1' aria-disabled='true') Next

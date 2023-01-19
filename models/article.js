@@ -1,23 +1,38 @@
-let mongoose = require('mongoose')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const Populate = require('../utils/autopopulate')
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 //Article  Schema
-let articleSchema = mongoose.Schema({
+const articleSchema = mongoose.Schema({
     title: {
         type: String,
         required: true
     },
-    author: {
-        type: String,
-        required: true
+    author: { 
+        type: Schema.Types.ObjectId, 
+        ref: "User", 
+        required: true 
     },
     body: {
         type: String,
         required: true
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
+    articleComments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment'
+    }]
+}, 
+    {   
+        timestamps: {
+        createdAt: 'created_on', updatedAt: 'updated_on'
+    }
 })
 
-let Article = module.exports = mongoose.model('Article', articleSchema)
+articleSchema
+    .pre('findOne', Populate('author'))
+    .pre('find', Populate('author'))
+
+articleSchema.plugin(mongoosePaginate)
+
+module.exports = mongoose.model('Article', articleSchema)

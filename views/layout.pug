@@ -1,4 +1,3 @@
-doctype html
 html(lang='en')
   head
     meta(charset='utf-8')
@@ -9,10 +8,7 @@ html(lang='en')
     title Blog about nothing and everything
     // Bootstrap core CSS
     link(href='/dist/css/bootstrap.min.css' rel='stylesheet')
-    // JS 
-    script(src='/dist/jquery/jquery.min.js')
-    script(src='/dist/js/bootstrap.min.js')
-    script(src='/dist/umd/popper.js')
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet')
     // Favicons
     link(rel='apple-touch-icon' href='/assets/img/favicons/apple-touch-icon.png' sizes='180x180')
     link(rel='icon' href='/assets/img/favicons/favicon-32x32.png' sizes='32x32' type='image/png')
@@ -42,7 +38,10 @@ html(lang='en')
     link(href='/assets/styles/blog.css' rel='stylesheet')
   body
     .container
-      include alert
+      != messages('message', locals)
+      if(errors)
+        each error, i in errors   
+          div(class='alert alert-danger') #{error.msg}
       header.blog-header.py-3
         .row.flex-nowrap.justify-content-between.align-items-center
           .col-4.pt-1
@@ -58,36 +57,15 @@ html(lang='en')
             if user      
               a.btn.btn-sm.btn-outline-secondary(href='/users/logout') Logout
             else 
-              a.btn.btn-sm.btn-outline-secondary(href='/users/login') Login
+              a.btn.btn-sm.btn-outline-secondary.mr-1(href='/users/login') Login
               a.btn.btn-sm.btn-outline-secondary(href='/users/register') Register
-      .nav-scroller.py-1.mb-2
-        nav.nav.d-flex.justify-content-between
-          a.p-2.text-muted(href='#') World
-          a.p-2.text-muted(href='#') U.S.
-          a.p-2.text-muted(href='#') Technology
-          a.p-2.text-muted(href='#') Design
-          a.p-2.text-muted(href='#') Culture
-          a.p-2.text-muted(href='#') Business
-          a.p-2.text-muted(href='#') Politics
-          a.p-2.text-muted(href='#') Opinion
-          a.p-2.text-muted(href='#') Science
-          a.p-2.text-muted(href='#') Health
-          a.p-2.text-muted(href='#') Style
-          a.p-2.text-muted(href='#') Travel
+      include ./includes/navbar
       include jumbotron
     main.container(role='main')
-      .row
-        .col-md-8.blog-main
-          h3.pb-4.mb-4.font-italic.border-bottom
-            | From the Firehose
-          block content
-          // /.blog-post
-          nav.blog-pagination
-            a.btn.btn-outline-primary.m-1(href='#') Older
-            a.btn.btn-outline-secondary.disabled.m-1(href='#' tabindex='-1' aria-disabled='true') Newer
-        // /.blog-main
-        include sidebar
-        // /.blog-sidebar
-        // /.row
-        // /.container
+      block content
     include footer
+    // JS 
+    script(src='/dist/jquery/jquery.min.js')
+    script(src='/dist/umd/popper.min.js')
+    script(src='/dist/js/bootstrap.min.js')
+    script(src='/assets/vote.js')

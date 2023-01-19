@@ -1,42 +1,35 @@
+const express = require('express')
+const path = require('path')
+const session = require('express-session')
+const MongoStore = require('connect-mongo');
+const passport = require('passport')
+const methodOverride = require('method-override')
+const connectMongooseToDB = require('./config/database')
+
 if(process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
-
-const express = require('express')
-const pug = require('pug')
-const path = require('path')
-const methodOverride = require('method-override')
-const session = require('express-session')
-const flash = require('express-flash')
-const mongoose = require('mongoose')
-const cookieParser = require('cookie-parser')
-const passport = require('passport')
-const {check, validationResult} = require('express-validator')
-const config = require('./config/database')
-
-mongoose.connect(config.database)
-let db = mongoose.connection
-
-//Configure 
-
-
-// Check DB connection
-db.once('open', function() {
-    console.log('Connected to MongoDB')
-})
-
-//Check DB errors
-db.on('error', function(err) {
-    console.log(err)
-})
 
 //Init App
 const app = express()
 const port = 3000
 
-//Bring in Models
-let Article = require('./models/article')
-const { read } = require('@popperjs/core')
+//Connection to DB
+connectMongooseToDB(process.env.MONGO_URI)
+
+const store = MongoStore.create({ mongoUrl: process.env.MONGO_URI, touchAfter: 24 * 60 * 60 });
+
+app.use(session({
+    store: store,
+    secret: 'boooom',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+		httpOnly: true,
+		expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+		maxAge: 1000 * 60 * 60 * 24 * 7,
+	},
+}))
 
 //Load View Engine 
 app.set('views', path.join(__dirname, 'views'))
@@ -47,128 +40,78 @@ app.set('view engine', 'pug')
 app.use(express.urlencoded({ extended: true }));
 // parse application/json
 app.use(express.json())
-app.use(methodOverride('_method'))
 
-// Express Session Middleware
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 60 * 1000 } // 1 hour
-}))
+// Passport config
+require('./configs/passport-config')
 
 // Passport middleware
 app.use(passport.initialize())
 app.use(passport.session())
+
+// Method override
+app.use(methodOverride('_method'))
 
 app.get('*', (req, res, next) => {
     res.locals.user = req.user || null
     next()
 })
 
+const NewsCategory = require('./models/NewsCategory')
+
+// To show categories on all pages
+NewsCategory.find((err, categories) => {
+    if (err) { 
+        console.log(err)
+    } else {
+        app.locals.categories = categories
+    }
+})
+
 //Favicons & node_modules folders
 app.use('/dist/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')) // bootstrap css
 app.use('/dist/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'))  // bootstrap js
-app.use('/dist/umd', express.static(__dirname + '/node_modules/@popperjs/core/dist/umd')) // popper
+app.use('/dist/umd', express.static(__dirname + '/node_modules/popper.js/dist/umd')) // popper
 app.use('/dist/jquery', express.static(__dirname + '/node_modules/jquery/dist')) // jquery
+app.use('/dist/pace-js', express.static(__dirname + '/node_modules/pace-js')) // pace-js
+app.use('/dist/fontawesome', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/css')) // fontawesome
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')))
 app.use('/assets', express.static('assets')) 
+app.use('/css', express.static('css')) 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
+app.use('/public', express.static(path.join(__dirname, 'public')))
 
 // Flash-express
-app.use(flash())
-
-//Home Route
-app.get('/', function(req, res) {
-    Article.find({}, function(err, articles) {
-        if(err){
-            console.log(err)
-        } else {
-            res.render('index', {
-                title: 'Articles',
-                articles: articles    
-            })
-        }
-    })
+app.use(require('connect-flash')());
+app.use(function (req, res, next) {
+    res.locals.messages = require('express-messages')(req, res);
+    next()
 })
 
-//Get single Article
-app.get('/article/:id', (req, res) => {
-    Article.findById(req.params.id, function(err, article) {
-        res.render('article', {
-            article: article
-        })
-    })
+// Route file
+let main = require('./routes/main')
+let articles = require('./routes/articles')
+let users = require('./routes/users')
+let news = require('./routes/news')
+let admin = require('./routes/adminRoute')
+
+// Mount routes
+app.use('/', main)
+app.use('/articles', articles)
+app.use('/users', users)
+app.use('/news', news)
+app.use('/admin', admin)
+
+//Error handler
+app.use(function (err, req, res, next) {
+    console.log(err.stack)
+    res.status(500).send('Something wrong')
 })
 
-// Delete Article
-app.delete('/article/:id', async(req, res) => {
-    await Article.findByIdAndDelete(req.params.id)
-    res.redirect('/')
-})
-
-//Add Route
-app.get('/articles/add', (req, res) => res.render('add_article', {
-    title: 'Add Article'
-}))
-
-//Load Edit Page
-app.get('/article/edit/:id', (req, res) => {
-    Article.findById(req.params.id, function(err, article) {
-        res.render('edit_article', {
-            title: 'Edit Article',
-            article:article
-        })
-    })
-})
-
-// Edit Article
-app.post('/articles/edit/:id', (req, res) => {
-    let article = {}
-    article.title = req.body.title
-    article.author = req.body.author
-    article.body = req.body.body
-
-    let query = {_id:req.params.id}
-
-    Article.update(query, article, function(err) {
-        if(err){
-            console.log(err)
-            return
-        } else {
-            res.redirect('/')
-        }
-    })
-})
-
-//Add Submit POST
-app.post('/articles/add', (req, res) => {
-    let article = new Article()
-    article.title = req.body.title
-    article.author = req.body.author
-    article.body = req.body.body
-
-    article.save(function(err) {
-        if(err){
-            console.log(err)
-            return
-        } else {
-            req.flash('success', 'Article added')
-            res.redirect('/')
-        }
-    })
-})
-
-// Route files
-//let articles = require('./routes/articles');
-let users = require('./routes/users');
-//app.use('/articles', articles);
-app.use('/users', users);
-
-app.get('/test-cockie', (req, res) => {
-    req.session.isAuth = true
-    console.log(req.session)
-    console.log(req.session.id)
-    res.send('Caboom')
+// Error 404
+app.use((req, res, next) => {
+    res.status(404).render('404')
 })
 
 // Start server
-app.listen(port, () => console.log(`App listening on port 3000`))
+app.listen(port, () => 
+    console.log(`App listening on port ${port}`))

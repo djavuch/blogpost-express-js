@@ -1,0 +1,61 @@
+extends ../layouts/_layout.pug
+
+block variables
+	- var activePage = 'basic-table'
+	- var activeGroup = 'tables'
+
+block title
+	title News list
+
+block content
+	.app-title
+		div
+			h1
+				i.fa.fa-th-list
+				|  News categories
+			p Creating and editing news categories
+
+		ul.app-breadcrumb.breadcrumb
+			li.breadcrumb-item
+				i.fa.fa-home.fa-lg
+			li.breadcrumb-item
+				a(href="/admin") Main page
+			li.breadcrumb-item
+				| News categories	
+
+	.row
+		.col-md-12
+			.tile
+				.table-responsive
+					table.table
+						thead
+							tr
+								th #
+								th Name
+						each newsCategory, index in categoriesList
+							tbody
+								tr
+									td #
+									td= newsCategory.title
+					.panel-footer
+						button.btn.btn-primary.btn-sm.mr-1(type='button', data-toggle='modal', data-target='#addNewsCategory') 
+							i.fa.fa-plus-circle(aria-hidden='true')
+							| Add category
+						#addNewsCategory.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addNewsCategotyTitle', aria-hidden='true' )
+							form(method='post', action='/admin/news-categories/add')
+								.modal-dialog.modal-dialog-centered(role='document')
+									.modal-content
+										.modal-header
+											h5.modal-title Add category
+											button.close(type='button', data-dismiss='modal', aria-label='Close')
+												span(aria-hidden='true') ×
+										.modal-body
+											label(for='inputCategoryName') Name of category
+											input#inputCategoryName.form-control(name='title', type='text', placeholder='Enter the name')
+											small#categoryHelp.form-text.text-muted Enter the name of the news category
+										.modal-footer
+											button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+											button.btn.btn-danger(type='submit') Save
+						a.button.btn.btn-danger.btn-sm.mr-1(type='button') 
+							i.fa.fa-trash(aria-hidden='true')
+							| Delete

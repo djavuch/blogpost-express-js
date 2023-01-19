@@ -1,0 +1,66 @@
+extends layouts/_layout.pug
+
+block variables
+	- var activePage = 'basic-table'
+	- var activeGroup = 'tables'
+
+block title
+	title News list
+
+block content
+	.app-title
+		div
+			h1
+				i.fa.fa-th-list
+				|  Articles list
+			p Articles published on the website
+	.row
+		.col-md-12
+			.tile
+				.table-responsive
+					table.table
+						thead
+							tr
+								th #
+								th News title
+								th Author
+								th Post date
+								th Post update date
+						each article, index in articlesList
+							tbody
+								tr
+									td= index + 1
+									td= article.title
+									td= article.author.name
+									td= article.created_on.toLocaleDateString()
+									td= article.updated_on.toLocaleDateString()
+			if totalPages < 20
+				nav(aria-label='Page navigation example')
+					ul.pagination.justify-content-center
+						if hasPrevPage
+							li.page-item
+								a.page-link(href=`/admin/articles/?page=${currentPage-1}`) Previous
+						else
+							li.page-item.disabled
+								a.page-link(href='#' tabindex='-1' aria-disabled='true') Previous
+						//Previous page logic
+						li.page-item
+							- pageCounterBeforeCurrentPage= 0
+							while pageCounterBeforeCurrentPage < currentPage - 1
+								- pageCounterBeforeCurrentPage= pageCounterBeforeCurrentPage + 1
+									li.page-item
+										a.page-link(href=`/admin/articles/?page=${pageCounterBeforeCurrentPage}`)= pageCounterBeforeCurrentPage
+						//Current page logic
+						li.page-item.active
+							a.page-link(href='#')= currentPage
+							- pageCounterAfterCurrentPage= currentPage
+							while pageCounterAfterCurrentPage < totalPages
+								- pageCounterAfterCurrentPage= pageCounterAfterCurrentPage + 1
+									li.page-item
+										a.page-link(href=`/admin/articles/?page=${pageCounterAfterCurrentPage}`)= pageCounterAfterCurrentPage
+						if hasNextPage
+							li.page-item
+								a.page-link(href=`/admin/articles/?page=${currentPage+1}`) Next
+						else
+							li.page-item.disabled
+								a.page-link(href='#' tabindex='-1' aria-disabled='true') Next

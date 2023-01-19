@@ -1,28 +1,57 @@
-const LocalStrategy = require('passport-local').Strategy
-const { User } = require('../models/user')
 const bcrypt = require('bcrypt')
+const { User } = require('../models/user')
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
 
-function initialize(passport, getUserByUsername, getUserById) {
-    const authenticateUser = async (username, password, done) => {
-        const user = await getUserByUsername(username)
-        if (user == null) {
-            return done(null, false, { message: 'No user  with that name'})
-        }
-        try {
-            if(await bcrypt.compare(password, user.password)) {
-                return done(null, user)
-            } else {
-            return done(null, false, { message: 'Password incorrect'})
-            }
-        } catch (e) {
-            return done(e)
-        }
-    }
-    passport.use(new LocalStrategy({usernameField: 'username'}, authenticateUser))
-    passport.serializeUser((user, done) => done(null, user.id))
-    passport.deserializeUser((id, done) => { 
-        return done(null, getUserById(id))
+passport.serializeUser((user, done) => {
+    done(null, user.id)
+})
+
+passport.deserializeUser((id, done) => {
+    User.findById(id, (err, user) => {
+        done(err, user)
     })
-}
+})
 
-module.exports = initialize
+passport.use(
+    new LocalStrategy({ usernameField: 'username'}, (username, password, done) => {
+        // Match User
+        User.findOne({ username: username})
+            .then(user => {
+                // New user
+                if(!user) {
+                    const newUser = new User({ username, password})
+                    // Hash password before saving in DB
+                    bcrypt.genSalt(10, (err, salt) => {
+                        bcrypt.hash(newUser.password, salt, (err, hash) => {
+                            if (err) throw err
+                            newUser.password = hash
+                            newUser.save()
+                                .then(user => {
+                                    return done(null, user)
+                                })
+                                .catch(err => {
+                                    return done(null, false, { message: err })
+                                })
+                        })
+                    })
+                    //Return other user
+                } else {
+                    //Match password
+                    bcrypt.compare(password, user.password, (err, isMatch) => {
+                        if (err) throw err
+                        if (isMatch) {
+                            return done(null, user)
+                        } else {
+                            return done(null, false, { message: "Wrong password" })
+                        }
+                    })
+                }
+            })
+            .catch(err => {
+                return done(null, false, { message: err })
+            })
+    })
+)
+
+module.exports = passport
