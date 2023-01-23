@@ -2,7 +2,7 @@ block content
     section.mb-5
         .card.bg-light
             .card-body
-                form.mb-4(method='POST', action='/news/' + news._id + '/comments')
+                form.mb-4(method='POST', action=`/news/${news._id}/comments`)
                     textarea.form-control(rows='3' name='commentText' type='comments' placeholder='Join the discussion and leave a comment!')
                     br
                     input.btn-small.btn-primary.float-right(type='submit', value='Send')
@@ -36,7 +36,7 @@ block content
                                                     button.close(type='button' data-dismiss='modal' aria-label='Close')
                                                     span(aria-hidden='true') ×
                                                 .modal-body
-                                                    form.mb-4(method='POST' action='/news/comments/edit/' + comment._id)
+                                                    form.mb-4(method='POST' action=`/news/${news._id}/comments/edit/${comment._id}`)
                                                         textarea.form-control(name='commentText' rows='3' cols='150')= comment.commentText
                                                         input.btn-small.btn-primary.float-right(type='submit' value='Send')
                                                 .modal-footer

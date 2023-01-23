@@ -8,7 +8,7 @@ block content
             each news, i in newswire
                 .blog-post
                     #news-meta= news.created_on.toLocaleDateString() 
-                    a(class= "blog-post-title" href= '/news/' + news.category.slug + '/' + news.slug)= news.title
+                    a(class= "blog-post-title" href= '/news/' + news.slug)= news.title
         .col-md-4.article-block
             h3.pb-4.mb-4.font-italic.border-bottom
                 | Personal blog

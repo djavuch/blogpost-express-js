@@ -28,15 +28,22 @@ exports.addComment = async (req, res, next) => {
 
         await news.save()
 
-        res.redirect('/news/' + news.category.slug + '/' + news.slug)
+        res.redirect(`/news/${news.slug}`)
     } catch (err) {
         next(err)
     }
 }
 
 // Edit comment
-exports.editComment = (req, res, next) => {
+exports.editComment = async (req, res, next) => {
     try {
+        const newsid = req.params.newsId
+
+        const news = await News.findOne({_id: newsid})
+        if(!news) {
+            req.flash('danger', 'News not found')
+            return res.redirect(404)
+        }
         const { commentText } = req.body
     
         Comment.findByIdAndUpdate(req.params.id, { commentText }, (err, updatedComment) => {
@@ -44,7 +51,7 @@ exports.editComment = (req, res, next) => {
                 console.log(err)
             } else {
                 console.log(updatedComment)
-                res.redirect('/') // ??
+                res.redirect(`/news/${news.slug}`)
             }
         })
     } catch (err) {
@@ -76,7 +83,7 @@ exports.deleteComment = async (req, res, next) => {
 
         news.save()
 
-        return res.redirect('/news/' + news.category.slug + '/' + news.slug)
+        return res.redirect(`/news/${news.slug}`)
     } catch (error) {
         next(error)
     }

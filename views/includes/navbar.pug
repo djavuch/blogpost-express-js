@@ -1,4 +1,4 @@
 .nav-scroller.py-1.mb-2
     nav.nav.d-flex.justify-content-between
         each category, i in categories
-            a.p-2.text-muted(href='/news/' + category.slug)= category.title
+            a.p-2.text-muted(href='/news/categories/' + category.slug)= category.title
