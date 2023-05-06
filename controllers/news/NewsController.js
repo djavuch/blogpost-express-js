@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
-const News  = require('../../models/news')
-const NewsCategory = require('../../models/NewsCategory')
+const News  = require('../../models/news/NewsModel')
+const NewsCategory = require('../../models/news/NewsCategoryModel')
+const Comment = require('../../models/comment')
 
 // News by category
 exports.groupNewsByCategory = async (req, res, next) => {
@@ -56,7 +57,7 @@ exports.newswireForBlog = function(req, res) {
     const { page } = req.query
     const options = {
         page: parseInt(page, 3) || 1,
-        limit: 3
+        limit: 10
     }
 
     News.paginate({}, options).then((newswire, err) => {
@@ -79,16 +80,36 @@ exports.newswireForBlog = function(req, res) {
 
 // Single news on GET
 exports.getNews = async (req, res, next) => {
-    const news_slug = req.params.slug
+    const commentPerPage = 1
+    const page = (parseInt(req.query.page)) || 1
 
     try {
-        const news = await News.findOne({ news_slug }).populate('comments')
+        const news = await News.findOne({ slug: req.params.news_slug })
+            .populate({
+                path: 'comments',
+                options: { 
+                    skip: (page - 1) * commentPerPage,
+                    limit: commentPerPage,
+                }
+            }).exec()
+
+        const commentCount = await Comment.countDocuments({ newsId: news })
+            .exec()
+
+        const pages = Math.ceil(commentCount / commentPerPage)
+        const prevPage = page === 1 ? null : page - 1
+        const nextPage = page < Math.ceil(commentCount / commentPerPage)
 
         if (news) {
             // News view counter
             news.incrementViewsCounter()
             return res.render('news/news_body', { 
-                news
+                news,
+                comments: news.comments,
+                currentPage: page,
+                pages,
+                prevPage,
+                nextPage
             })
         }
         res.status(404)

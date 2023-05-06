@@ -6,6 +6,8 @@ package-lock.json
 comment(from old schemas).pug
 reserve.js
 
+.vscode
+
 .env
 
 

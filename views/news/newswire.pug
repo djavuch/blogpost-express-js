@@ -8,7 +8,7 @@ block content
             each news, i in newswire
                 .blog-post
                     #news-meta= news.created_on.toLocaleDateString() 
-                    a(class= "blog-post-title" href= '/news/' + news._id)= news.title
+                    a(class= "blog-post-title" href= '/news/' + news.slug)= news.title
         include ../sidebar
     //Navigation block
     nav(aria-label='News navigation')

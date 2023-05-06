@@ -1,66 +1,161 @@
-html
-    head
-        link(href='https://use.fontawesome.com/releases/v5.8.2/css/all.css' rel='stylesheet')
-        link(href='/dist/fontawesome/fontawesome.css' rel='stylesheet')
-        link(href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet')
-        link(href='/dist/css/bootstrap.min.css' rel='stylesheet')
-        link(href='/assets/styles/login.css' rel='stylesheet')
-        link(rel='stylesheet' href='/assets/styles/edit_user_profile.css')
-        script(src='/dist/jquery/jquery.slim.min.js')
-        script(src='/dist/js/bootstrap.bundle.min.js')
-        title Edit  profile
-    body
-        .container.rounded.bg-white.mt-5.mb-5
-            form(method='POST' enctype='multipart/form-data' action='/users/' + user.id)
-                .row
-                    .col-md-3.border-right
-                        .d-flex.flex-column.align-items-center.text-center.p-3.py-5
-                            input(type='file', name='avatar')
-                            input(type='submit', name='uploadimage', value='Upload Image')
-                            span.font-weight-bold 
-                            span.text-black-50 amelly12@bbb.com
-                            span          
-                    .col-md-5.border-right
-                        .p-3.py-5
-                            .d-flex.justify-content-between.align-items-center.mb-3
-                                h4.text-right Profile Settings
-                            .row.mt-2
-                                .col-md-6
-                                    label.labels Name
-                                    input.form-control(name='name', type='text', value=user.name)
-                                .col-md-6
-                                    label.labels Surname
-                                    input.form-control(type='text' value='' placeholder='surname')
-                            .row.mt-3
-                                .col-md-12
-                                    label.labels Facebook
-                                    input.form-control(name='facebook' type='text' placeholder='Enter a link to your facebook page' value=user.facebook)
-                                .col-md-12
-                                    label.labels Instagram
-                                    input.form-control(name='instagram' type='text' placeholder='Enter a link to your instagram page' value=user.instagram)
-                                .col-md-12
-                                    label.labels Twitter
-                                    input.form-control(name='twitter' type='text' placeholder='Enter a link to your twitter page' value=user.twitter)
-                                .col-md-12
-                                    label.labels Reddit
-                                    input.form-control(name='reddit' type='text' placeholder='Enter a link to your reddit profile' value=user.reddit)
-                                .col-md-12
-                                    label.labels Github
-                                    input.form-control(name='github' type='text' placeholder='Enter a link to your github page' value=user.github)    
-                            .row.mt-3
-                                .col-md-6
-                                    label.labels Country
-                                    input.form-control(type='text' placeholder='country' value='')
-                                .col-md-6
-                                    label.labels State/Region
-                                    input.form-control(type='text' value='' placeholder='state')
-                            .mt-5.text-center
-                                button.btn.btn-primary.profile-button(type='submit' value='Submit') Save Profile
-                    .col-md-4
-                        .p-3.py-5
-                            .d-flex.justify-content-between.align-items-center.experience
-                                span Edit Experience
-                            br
-                            .col-md-12
-                                label.labels About you 
-                                input.textarea#exampleFormControlTextarea1.form-control(rows='3' name='about' type='text' placeholder='Info about you' value=user.about)
+extends layout
+
+block content 
+  .container
+    .row.flex-lg-nowrap
+      .col-12.col-lg-auto.mb-3(style='width: 200px;')
+        .card.p-3
+          .e-navlist.e-navlist--active-bg
+            ul.nav
+              li.nav-item
+                a.nav-link.px-2.active(href='#')
+                  i.fa.fa-fw.fa-bar-chart.mr-1
+                  span Overview
+              li.nav-item
+                a.nav-link.px-2(href='https://www.bootdey.com/snippets/view/bs4-crud-users', target='__blank')
+                  i.fa.fa-fw.fa-th.mr-1
+                  span CRUD
+              li.nav-item
+                a.nav-link.px-2(href='https://www.bootdey.com/snippets/view/bs4-edit-profile-page', target='__blank')
+                  i.fa.fa-fw.fa-cog.mr-1
+                  span Settings
+      .col
+        .row
+          .col.mb-3
+            .card
+              .card-body
+                .e-profile
+                  .row
+                    .col-12.col-sm-auto.mb-3
+                      .mx-auto(style='width: 140px;')
+                        .d-flex.justify-content-center.align-items-center.rounded(style='height: 140px; background-color: rgb(233, 236, 239);')
+                          span(style='color: rgb(166, 168, 170); font: bold 8pt Arial;') 140x140
+                    .col.d-flex.flex-column.flex-sm-row.justify-content-between.mb-3
+                      .text-center.text-sm-left.mb-2.mb-sm-0
+                        h4.pt-sm-2.pb-1.mb-0.text-nowrap= user.name
+                        p.mb-0 @johnny.s
+                        .text-muted
+                          small Last seen 2 hours ago
+                        .mt-2
+                          form(method='POST' enctype='multipart/form-data' action='/users/upload/' + user.username)
+                            label.btn.btn-primary(type='button')
+                              i.fa.fa-fw.fa-camera
+                              span Change Photo
+                                input(type='file', name='avatar', style='display: none;')
+                            button.btn.btn-primary(type='button')
+                              i.fa.fa-fw.fa-check
+                                input(type='submit')
+                                //- input(type='submit', name='uploadimage', value='Upload Image')
+                          //- button.btn.btn-primary(type='button')
+                          //-   i.fa.fa-fw.fa-camera
+                          //-   span Change Photo
+                      .text-center.text-sm-right
+                        span.badge.badge-secondary= user.role
+                        .text-muted
+                          small= 'Joined' + ' ' + user.date.toLocaleDateString()
+                  ul.nav.nav-tabs
+                    li.nav-item
+                      a.active.nav-link(href='') Settings
+                  .tab-content.pt-3
+                    .tab-pane.active
+                      form.form(novalidate='')
+                        .row
+                          .col
+                            .row
+                              .col
+                                .form-group
+                                  label Full Name
+                                  input.form-control(type='text', name='name', placeholder='John Smith', value= user.name)
+                              .col
+                                .form-group
+                                  label Username
+                                  input.form-control(type='text', name='username', placeholder='johnny.s', value= user.username)
+                            .row
+                              .col
+                                .form-group
+                                  label Email
+                                  input.form-control(type='text', placeholder='user@example.com', value= user.email)
+                            .row
+                              .col.mb-3
+                                .form-group
+                                  label About
+                                  textarea.form-control(rows='5', placeholder='My Bio', value= user.about)
+                            .row
+                              .col
+                                .form-group
+                                  label WebSite
+                                  input.form-control(type='text', name='name', placeholder='John Smith', value= user.website)
+                              .col
+                                .form-group
+                                  label Github
+                                  input.form-control(type='text', name='username', placeholder='johnny.s', value= user.github)
+                            .row
+                              .col
+                                .form-group
+                                  label Facebook
+                                  input.form-control(type='text', name='name', placeholder='John Smith', value= user.facebook)
+                              .col
+                                .form-group
+                                  label Instagram
+                                  input.form-control(type='text', name='username', placeholder='johnny.s', value= user.instagram)
+                            .row
+                              .col
+                                .form-group
+                                  label Reddit
+                                  input.form-control(type='text', name='name', placeholder='John Smith', value= user.reddit)
+                              .col
+                                .form-group
+                                  label Twitter
+                                  input.form-control(type='text', name='username', placeholder='johnny.s', value= user.twitter)
+                        .row
+                          .col-12.col-sm-6.mb-3
+                            .mb-2
+                              b Change Password
+                            .row
+                              .col
+                                .form-group
+                                  label Current Password
+                                  input.form-control(type='password', placeholder='••••••')
+                            .row
+                              .col
+                                .form-group
+                                  label New Password
+                                  input.form-control(type='password', placeholder='••••••')
+                            .row
+                              .col
+                                .form-group
+                                  label
+                                    | Confirm
+                                    span.d-none.d-xl-inline Password
+                                  input.form-control(type='password', placeholder='••••••')
+                          .col-12.col-sm-5.offset-sm-1.mb-3
+                            .mb-2
+                              b Keeping in Touch
+                            .row
+                              .col
+                                label Email Notifications
+                                .custom-controls-stacked.px-2
+                                  .custom-control.custom-checkbox
+                                    input#notifications-blog.custom-control-input(type='checkbox', checked='')
+                                    label.custom-control-label(for='notifications-blog') Blog posts
+                                  .custom-control.custom-checkbox
+                                    input#notifications-news.custom-control-input(type='checkbox', checked='')
+                                    label.custom-control-label(for='notifications-news') Newsletter
+                                  .custom-control.custom-checkbox
+                                    input#notifications-offers.custom-control-input(type='checkbox', checked='')
+                                    label.custom-control-label(for='notifications-offers') Personal Offers
+                        .row
+                          .col.d-flex.justify-content-end
+                            button.btn.btn-primary(type='submit') Save Changes
+          .col-12.col-md-3.mb-3
+            .card.mb-3
+              .card-body
+                .px-xl-3
+                  button.btn.btn-block.btn-secondary
+                    i.fa.fa-sign-out
+                    span Logout
+            .card
+              .card-body
+                h6.card-title.font-weight-bold Support
+                p.card-text Get fast, free help from our friendly assistants.
+                button.btn.btn-primary(type='button') Contact Us

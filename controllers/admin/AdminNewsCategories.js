@@ -1,4 +1,4 @@
-const newsCategory = require('../../models/NewsCategory')
+const newsCategory = require('../../models/news/NewsCategoryModel')
 
 exports.addNewsCategory = (req, res, next) => {
     const category = new newsCategory(req.body)

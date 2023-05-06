@@ -1,7 +1,7 @@
 const express = require('express')
 const mainRoute = express.Router()
 const Article = require('../models/article')
-const News = require('../models/news')
+const News = require('../models/news/NewsModel')
 
 
 mainRoute.get('/', async (req, res) => {

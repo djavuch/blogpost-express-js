@@ -7,9 +7,10 @@ const AdminNews = require('../controllers/admin/AdminNews')
 const AdminNewsCategories = require('../controllers/admin/AdminNewsCategories')
 const AdminArticles = require('../controllers/admin/AdminArticles')
 const AdminUsers = require('../controllers/admin/AdminUsers')
+const upload = require('../configs/multer-config')
 
 // Require middleware
-const { roleAuthorization } = require('../middleware/authorization')
+const { roleAuthentication } = require('../middleware/authentication')
 
 // Main page
 router.get('/',  (req, res) => {
@@ -27,11 +28,13 @@ router.get('/auth', AdminAuth.authToAdminPanelView)
 ******** News section *********
 ******************************/
 
-router.get('/news',  AdminNews.listOfNews)
+router.get('/news', AdminNews.listOfNews)
 
-router.get('/news/add',  AdminNews.addNewsView)
+router.get('/news/add', AdminNews.addNewsView)
 
-router.post('/news/add',  AdminNews.addNews)
+router.post('/news/add', roleAuthentication('admin'), AdminNews.addNews)
+
+router.post('/news/upload', upload.single('images'), AdminNews.uploadPics)
 
 router.get('/news/edit/:id',  AdminNews.editNewsView)
 
@@ -82,5 +85,14 @@ router.get('/bootstrap-components', (req, res) => {
         title: 'Components'
     })
 })
+
+function ensureAuthenticated(req, res, next) {
+  if(req.isAuthenticated()) {
+    return next()
+  } else {
+    req.flash('danger', 'Access denied')
+    res.redirect('/admin/auth')
+  }
+}
 
 module.exports = router

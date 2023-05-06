@@ -2,12 +2,11 @@ const express = require('express')
 const router = express.Router()
 
 // Require middleware
-const { roleAuthorization } = require('../middleware/authorization')
+const { roleAuthentication } = require('../middleware/authentication')
 
 // Require controlles
 const NewsController = require('../controllers/news/NewsController')
 const NewsCommentsController = require('../controllers/news/NewsCommentsController')
-
 
 /// NEWS ROUTES ///
 
@@ -21,12 +20,12 @@ router.get('/newswire', NewsController.newswireForBlog)
 router.get('/:news_slug', NewsController.getNews)
 
 // News comment section
-router.post('/:newsId/comments', NewsCommentsController.addComment)
+router.post('/:newsId/send', NewsCommentsController.addComment)
 
 // Edit news comments
-router.post('/:newsId/comments/edit/:id',  NewsCommentsController.editComment )
+router.post('/:newsId/comments/edit/:id', roleAuthentication('admin', 'moderator'), NewsCommentsController.editComment )
 
 // Delete comments
-router.delete('/:newsId/comments/:id', NewsCommentsController.deleteComment)
+router.delete('/:newsId/comments/:id', roleAuthentication('admin', 'moderator'), NewsCommentsController.deleteComment)
 
 module.exports = router

@@ -1,10 +1,10 @@
 const express = require('express')
 const path = require('path')
 const session = require('express-session')
-const MongoStore = require('connect-mongo');
+const MongoStore = require('connect-mongo')
 const passport = require('passport')
 const methodOverride = require('method-override')
-const connectMongooseToDB = require('./config/database')
+const connectMongooseToDB = require('./configs/database')
 
 if(process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
@@ -37,9 +37,10 @@ app.set('view engine', 'pug')
 
 // Body Parser Middleware
 // parse application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
-// parse application/json
+app.use(express.urlencoded({extended: true }))
+// // parse application/json
 app.use(express.json())
+
 
 // Passport config
 require('./configs/passport-config')
@@ -56,7 +57,7 @@ app.get('*', (req, res, next) => {
     next()
 })
 
-const NewsCategory = require('./models/NewsCategory')
+const NewsCategory = require('./models/news/NewsCategoryModel')
 
 // To show categories on all pages
 NewsCategory.find((err, categories) => {
@@ -81,11 +82,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use('/public', express.static(path.join(__dirname, 'public')))
 
 // Flash-express
-app.use(require('connect-flash')());
-app.use(function (req, res, next) {
-    res.locals.messages = require('express-messages')(req, res);
-    next()
-})
+app.use(require('express-flash')())
+// app.use((req, res, next) => {
+//   res.locals.messages = require('express-messages')(req, res)
+//   next()
+// })
 
 // Route file
 let main = require('./routes/main')

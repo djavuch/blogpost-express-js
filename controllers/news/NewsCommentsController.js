@@ -1,12 +1,12 @@
 const Comment = require("../../models/comment")
-const News = require("../../models/news")
+const News = require("../../models/news/NewsModel")
 
 // Add comment
 exports.addComment = async (req, res, next) => {
     try {
         const newsid = req.params.newsId
 
-        const news = await News.findOne({_id: newsid})
+        const news = await News.findOne({ _id: newsid })
         if(!news) {
             req.flash('danger', 'News not found')
             return res.redirect(404)
@@ -88,4 +88,3 @@ exports.deleteComment = async (req, res, next) => {
         next(error)
     }
 }
-

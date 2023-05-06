@@ -1,5 +1,5 @@
-const News = require('../../models/news')
-const NewsCategory = require('../../models/NewsCategory')
+const News = require('../../models/news/NewsModel')
+const NewsCategory = require('../../models/news/NewsCategoryModel')
 
 exports.listOfNews = (req, res) => {
     const aggregateListOfNews = News.aggregate([
@@ -80,3 +80,25 @@ exports.deleteNews = (req, res) => {
             console.log(err)
     })
 }
+
+exports.uploadPics =  (req, res) => {
+    res.json({
+        location:
+            "/uploads/" + req.file.filename,
+      })
+}
+
+// const singleFileUpload = async (req, res, next) => {
+//     try{
+//         const file = new SingleFile({
+//             fileName: req.file.originalname,
+//             filePath: req.file.path,
+//             fileType: req.file.mimetype,
+//             fileSize: fileSizeFormatter(req.file.size, 2) // 0.00
+//         });
+//         await file.save();
+//         res.status(201).send('File Uploaded Successfully');
+//     }catch(error) {
+//         res.status(400).send(error.message);
+//     }
+// }

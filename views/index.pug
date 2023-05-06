@@ -9,6 +9,7 @@ block content
                 .blog-post
                     #news-meta= news.created_on.toLocaleDateString() 
                     a(class= "blog-post-title" href= '/news/' + news.slug)= news.title
+                a(class= "blog-post-title" href= '/news/newswire') All news
         .col-md-4.article-block
             h3.pb-4.mb-4.font-italic.border-bottom
                 | Personal blog
