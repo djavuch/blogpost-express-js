@@ -1,0 +1,5 @@
+if errors
+  each error, i in errors
+    div(class='alert alert-danger') #{error.msg}
+      button.close(type='button', data-dismiss='alert', aria-label='Close')
+        span(aria-hidden='true') &times;

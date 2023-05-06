@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  .container.my-5
+    section
+      h3.font-weight-normal.text-center.dark-grey-text.pb-2.display-4
+        strong Welcome to our blog!
+      hr.w-header.my-4
+      p.lead.text-center.text-muted.pt-2.mb-5
+        | We invite you to become part of our friendly community, share news and comment on them!
+      .row.d-flex.justify-content-center
+        .col-6
+          form.form-signup(method='POST', action='/users/signup')
+            // Block name
+            .md-form.md-outline.form-lg
+              label(for='formName') Name
+              input#formName.form-control.form-control-lg(name='name' type='text' placeholder='Name' autofocus='')
+            // block username
+            .md-form.md-outline.form-lg
+              label(for='formUsername') Username
+              input#formUsername.form-control.form-control-lg(name='username' type='text' placeholder='Username'  autofocus='')
+            // Block email
+            .md-form.md-outline.form-lg
+              label(for='formEmail') Email
+              input#formEmail.form-control.form-control-lg(name='email' type='text' placeholder='Email'  autofocus='')
+            // Block password
+            .md-form.md-outline.form-lg
+              label(for='formPassword') Password
+              input#formPassword.form-control.form-control-lg(name='password' type='password' placeholder='Password'  autofocus='')
+            .md-form.md-outline.form-lg
+              label(for='formPassword2') Confirm password
+              input#formPassword2.form-control.form-control-lg(name='password2' type='password' placeholder='Password' autofocus='')
+            button.btn.btn-block.btn-primary.btn-lg.mt-3 Sign up
