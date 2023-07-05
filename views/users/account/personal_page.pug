@@ -1,4 +1,4 @@
-extends layout 
+extends ../../layout
 
 block content 
   .container
@@ -8,7 +8,7 @@ block content
         ol.breadcrumb
           li.breadcrumb-item
             a(href='/') Home
-          li.breadcrumb-item.active(aria-current='page')= user.username + ' ' + 'profile'
+          li.breadcrumb-item.active(aria-current='page')= user.username + '\'s' + ' ' + 'profile'
       // Breadcrumb
       .row.gutters-sm
         .col-md-4.mb-3
@@ -22,10 +22,10 @@ block content
                 .mt-3
                   h4= user.name
                   p.text-secondary.mb-1= user.role
-                  p.text-muted.font-size-sm Bay Area, San Francisco, CA
+                  p.text-muted.font-size-sm= user.location
                   if user.avatar !== ''
-                    form.d-inline(action=`/users/remove_avatar/${user.username}?_method=DELETE` method='POST')
-                      button.btn.btn-danger(type='submit') Delete
+                    form.d-inline(action=`/users/me/remove_avatar/${user._id}?_method=DELETE` method='POST')
+                      button.btn.btn-danger(type='submit') Delete avatar
                   //- button.btn.btn-outline-primary Message
           .card.mt-3
             ul.list-group.list-group-flush
@@ -46,9 +46,15 @@ block content
                 span.text-secondary= user.twitter
               li.list-group-item.d-flex.justify-content-between.align-items-center.flex-wrap
                 h6.mb-0
+                  i.fa.fa-reddit.fa-lg.mr-2.icon-inline
+                  | Reddit
+                span.text-secondary= user.reddit
+              li.list-group-item.d-flex.justify-content-between.align-items-center.flex-wrap
+                h6.mb-0
                   i.fa.fa-instagram.fa-lg.mr-2.icon-inline
                   | Instagram
                 span.text-secondary= user.instagram
+
               li.list-group-item.d-flex.justify-content-between.align-items-center.flex-wrap
                 h6.mb-0
                   i.fa.fa-facebook.fa-lg.mr-2.icon-inline
@@ -70,14 +76,13 @@ block content
               hr
               .row
                 .col-sm-3
-                  h6.mb-0 Where
-                .col-sm-9.text-secondary
-                  | (239) 816-9029
+                  h6.mb-0 Phone Number
+                .col-sm-9.text-secondary= user.phoneNumber
               hr
               .row
                 .col-sm-12
                   if user
-                    a.btn.btn-info(href=`/users/edit/${user.username}`) Edit
+                    a.btn.btn-info(href='/users/me/edit') Edit
           .row.gutters-sm
             .col.mb-3
               .card.h-100

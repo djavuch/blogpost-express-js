@@ -1,7 +1,7 @@
 extends layouts/_layout.pug
 
 block variables
-	- var activePage = 'user-page'
+	- var activePage = 'users-page'
 	- var activeGroup = 'pages'
 
 block title
@@ -22,9 +22,9 @@ block content
 			.tile.p-0
 				ul.nav.flex-column.nav-tabs.user-tabs
 					li.nav-item
-						a.nav-link.active(href='#user-timeline' data-toggle='tab') Timeline
+						a.nav-link.active(href='#users-timeline' data-toggle='tab') Timeline
 					li.nav-item
-						a.nav-link(href='#user-settings' data-toggle='tab') Settings
+						a.nav-link(href='#users-settings' data-toggle='tab') Settings
 
 		.col-md-9
 			.tab-content

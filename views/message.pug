@@ -8,11 +8,11 @@ if messages.error
 
 // Warning
 if messages.warning
-  .alert.alert-warning.alert-dismissible.fade.show(role='alert')
-    for warning in messages.warning
+  for warning in messages.warning
+    .alert.alert-warning.alert-dismissible.fade.show(role='alert')
       div= warning
-    button.close(type='button', data-dismiss='alert', aria-label='Close')
-      span(aria-hidden='true') &times;
+        button.close(type='button', data-dismiss='alert', aria-label='Close')
+          span(aria-hidden='true') &times;
 
 // Success
 if messages.success

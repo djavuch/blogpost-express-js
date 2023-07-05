@@ -1,5 +1,5 @@
 header.app-header
-	a.app-header__logo(href='/admin') Vali
+	a.app-header__logo(href='/admin') Admin panel
 
 	// Sidebar toggle button
 	a.app-sidebar__toggle(href='#', data-toggle='sidebar', aria-label="Hide Sidebar")
@@ -84,14 +84,10 @@ header.app-header
 				i.fa.fa-user.fa-lg
 			ul.dropdown-menu.settings-menu.dropdown-menu-right
 				li
-					a.dropdown-item(href='page-user.html')
-						i.fa.fa-cog.fa-lg
-						|  Settings
-				li
-					a.dropdown-item(href='page-user.html')
+					a.dropdown-item(href='/users/me')
 						i.fa.fa-user.fa-lg
-						|  Profile
+						|  My page
 				li
-					a.dropdown-item(href='page-login.html')
+					a.dropdown-item(href='/users/logout')
 						i.fa.fa-sign-out.fa-lg
 						|  Logout

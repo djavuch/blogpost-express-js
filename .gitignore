@@ -7,6 +7,7 @@ comment(from old schemas).pug
 reserve.js
 
 .vscode
+.idea
 
 .env
 

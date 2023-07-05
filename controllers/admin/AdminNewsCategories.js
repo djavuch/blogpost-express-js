@@ -1,55 +1,62 @@
-const newsCategory = require('../../models/news/NewsCategoryModel')
+const NewsCategory = require('../../models/news/NewsCategoryModel')
 
-exports.addNewsCategory = (req, res, next) => {
-    const category = new newsCategory(req.body)
-    category.save()
-        .then(() => {
-            req.flash('success', 'Category added')
-            res.redirect('/admin/news-categories')
-        },
-        (err) => next(err)
-    )
-    .catch((err) => next(err))
-}   
+exports.addNewsCategory = async (req, res) => {
+  try {
+    const category = new NewsCategory(req.body)
 
-exports.addNewsCategoryView = (req, res) => {
-    res.render('admin/news-categories/form-add-news-category', {
-        title: 'Category adding'
+    await category.save()
+
+    req.flash('success', 'Category added.')
+    return res.redirect('/admin/news-categories')
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+exports.editNewsCategory = async (req, res, next) => {
+  try {
+    const categoryId = { _id: req.params.categoryId }
+
+    const { name } = req.body
+
+    await NewsCategory.findOneAndUpdate(categoryId, { name }, { new: true })
+
+    req.flash('success', 'Category was changed.')
+    return res.redirect('/admin/news-categories')
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+exports.deleteNewsCategory = async (req, res) => {
+  try {
+    const categoryId = { _id: req.params.categoryId }
+
+    const foundCategory = await NewsCategory.findOne({ _id: categoryId })
+
+    if (!foundCategory) {
+      req.flash('warning', 'Category not found.')
+      return res.redirect('/admin/news-categories')
+    }
+
+    await NewsCategory.deleteOne({ _id: categoryId })
+
+    req.flash('info', 'Category was deleted.')
+    return res.redirect('/admin/news-categories')
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+exports.getAllCategories = async (req, res) => {
+  try {
+    const listOfCategories = await NewsCategory.find({})
+
+    res.render('admin/news/table-news-categories', {
+      title: 'News categories',
+      listOfCategories
     })
-}
-
-exports.editNewsCategory = (req, res, next) => {
-    newsCategory.findByIdAndUpdate(req.params.category, req.body)
-        .then(() => {
-            req.flash('success', 'Category edited')
-            res.redirect('/admin/news-categories')
-        },
-        (err) => next(err)
-    )
-    .catch((err) => next(err))
-}
-
-exports.editNewsCategoryView = (req, res) => {a
-    res.render('admin/news-categories/form-edit-news-category', {
-        title: 'Change category name'
-    })
-}
-
-exports.deleteNewsCategory = (req, res) => {
-    newsCategory.findById(req.params.category)
-        .then((category) => {
-            category.remove(),
-            req.flash('success', 'Category deleted'),
-            res.redirect('/admin/news-categories')
-        })
-}
-
-exports.listOfCategories = (req, res) => {
-    newsCategory.find({})
-        .then((categoriesList) => {
-            res.render('admin/news-categories/table-news-categories', {
-                title: 'News categories',
-                categoriesList: categoriesList
-            })
-        })
+  } catch (err) {
+    console.log(err)
+  }
 }

@@ -1,0 +1,69 @@
+extends ../../layout
+
+block content 
+  .container
+    nav.main-breadcrumb(aria-label='breadcrumb')
+      ol.breadcrumb
+        li.breadcrumb-item
+          a(href='/') Home
+        li.breadcrumb-item
+          a(href=`/users/me`)= 'My profile'
+        li.breadcrumb-item.active(aria-current='page')= 'Edit profile'
+      .col
+        .row
+          .col.mb-3
+            .card
+              .card-body
+                .e-profile
+                  .row
+                    .col-12.col-sm-auto.mb-3
+                      if user.avatar === ''
+                        img(src= '/assets/no-avatar.png')
+                      else
+                        img(src= user.avatar)
+                    .col.d-flex.flex-column.flex-sm-row.justify-content-between.mb-3
+                      .text-center.text-sm-left.mb-2.mb-sm-0
+                        h4.pt-sm-2.pb-1.mb-0.text-nowrap= user.name
+                        p.mb-0 @johnny.s
+                        .text-muted
+                          small Last seen 2 hours ago
+                        .mt-2
+                          form(method='POST', enctype='multipart/form-data', action=`/users/me/upload_avatar/${user._id}?_method=PUT`)
+                            label.btn.btn-primary(type='button').mr-1
+                              i.fa.fa-fw.fa-camera.mr-1
+                              span Change Photo
+                                input(type='file', name='avatar', style='display: none;')
+                            label.btn.btn-primary(type='button')
+                              i.fa.fa-fw.fa-check.mr-1
+                              span Send
+                                input(type='submit', name='submit', style='display: none;')
+                      .text-center.text-sm-right
+                        span.badge.badge-secondary= user.role
+                        .text-muted
+                          small= 'Joined' + ' ' + user.date.toLocaleDateString()
+                  ul.nav.nav-tabs
+                    li.nav-item
+                      button#data-tab.nav-link.active(data-toggle='tab', data-target='#data', type='button', role='tab', aria-controls='data', aria-selected='true') Profile data
+                    li.nav-item
+                      button#email-tab.nav-link(data-toggle='tab', data-target='#email', type='button', role='tab', aria-controls='email', aria-selected='false') Email
+                    li.nav-item
+                      button#password-tab.nav-link(data-toggle='tab', data-target='#password', type='button', role='tab', aria-controls='password', aria-selected='false') Change password
+                  .tab-content.pt-3
+                    #data.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='home-tab')
+                      include personal_page_change_data
+                    #email.tab-pane.fade(role='tabpanel', aria-labelledby='profile-tab')
+
+                    #password.tab-pane.fade(role='tabpanel', aria-labelledby='contact-tab')
+                      include personal_page_change_password
+          .col-12.col-md-3.mb-3
+            .card.mb-3
+              .card-body
+                .px-xl-3
+                  button.btn.btn-block.btn-secondary
+                    i.fa.fa-sign-out
+                    span Logout
+            .card
+              .card-body
+                h6.card-title.font-weight-bold Support
+                p.card-text Get fast, free help from our friendly assistants.
+                button.btn.btn-primary(type='button') Contact Us

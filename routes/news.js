@@ -4,17 +4,17 @@ const router = express.Router()
 // Require middleware
 const { roleAuthentication } = require('../middleware/authentication')
 
-// Require controlles
+// Require controllers
 const NewsController = require('../controllers/news/NewsController')
 const NewsCommentsController = require('../controllers/news/NewsCommentsController')
 
 /// NEWS ROUTES ///
 
 // News by category
-router.get('/categories/:category_slug', NewsController.groupNewsByCategory)
+router.get('/categories/:category_slug', NewsController.getNewsByCategory)
 
-//Newswire
-router.get('/newswire', NewsController.newswireForBlog)
+// Newswire
+router.get('/newswire', NewsController.getNewswire)
 
 // News core section
 router.get('/:news_slug', NewsController.getNews)

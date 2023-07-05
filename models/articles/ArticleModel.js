@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const Populate = require('../utils/autopopulate')
-const mongoosePaginate = require('mongoose-paginate-v2')
+const Populate = require('../../utils/autopopulate')
 
 //Article  Schema
 const articleSchema = mongoose.Schema({
@@ -32,7 +31,5 @@ const articleSchema = mongoose.Schema({
 articleSchema
     .pre('findOne', Populate('author'))
     .pre('find', Populate('author'))
-
-articleSchema.plugin(mongoosePaginate)
 
 module.exports = mongoose.model('Article', articleSchema)

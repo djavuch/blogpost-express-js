@@ -1,0 +1,94 @@
+extends ../layouts/_layout.pug
+
+block variables
+  - var activePage = 'basic-table'
+  - var activeGroup = 'tables'
+
+block title
+  title #{title} | Blog about nothing and everything
+
+block content
+  .app-title
+    div
+      h1
+        i.fa.fa-th-list
+        |  News categories
+      p Creating and editing news categories
+
+    ul.app-breadcrumb.breadcrumb
+      li.breadcrumb-item
+        i.fa.fa-home.fa-lg
+      li.breadcrumb-item
+        a(href='/admin') Main
+      li.breadcrumb-item
+        | News categories
+
+  .row
+    .col-md-12
+      .tile
+        .table-responsive
+          table.table
+            thead
+              tr
+                th #
+                th Name
+                th Actions
+            each category, index in listOfCategories
+              tbody
+                tr
+                  td= index + 1
+                  td= category.name
+                  td
+                    button.btn.btn-primary.btn-sm.mr-1(type='button', data-toggle='modal', data-target=`#edit_category_${category._id}` ) Edit category
+                    div.modal.fade(id=`edit_category_${category._id}`, tabindex='-1', role='dialog', aria-labelledby=`label_${category._id}`, aria-hidden='true')
+                      form(method='post', action=`/admin/news-categories/edit/${category._id}`)
+                        .modal-dialog.modal-dialog-centered(role='document')
+                          .modal-content
+                            .modal-header
+                              h5.modal-title Edit category
+                              button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                span(aria-hidden='true') ×
+                            .modal-body
+                              label Category name
+                              input.form-control(name='name', type='text', placeholder='Enter the name', value= category.name)
+                              small.form-text.text-muted Change the name of the news category
+                            .modal-footer
+                              button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                              button.btn.btn-danger(type='submit') Save
+
+                    button.btn.btn-danger.btn-sm(type='button' data-toggle='modal' data-target=`#delete_category_${category._id}`) Delete
+                    div.modal.fade(id=`delete_category_${category._id}`, tabindex='-1', role='dialog', aria-labelledby=`label_${category._id}`, aria-hidden='true' )
+                      .modal-dialog.modal-dialog-centered(role='document')
+                        .modal-content
+                          .modal-header
+                            h5.modal-title Delete news
+                            button.close(type='button', data-dismiss='modal', aria-label='Close')
+                              span(aria-hidden='true') ×
+                          .modal-body
+                            p Are you sure you want to delete the news? This action will completely remove it from the database.
+                          .modal-footer
+                            button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+                            form.d-inline(action=`/admin/news-categories/${category._id}` + '?_method=DELETE' method='POST')
+                              button.btn.btn-danger(type='submit') Delete
+          .panel-footer
+            button.btn.btn-primary.btn-sm.mr-1(type='button', data-toggle='modal', data-target='#addNewsCategory')
+              i.fa.fa-plus-circle(aria-hidden='true')
+              | Add category
+            #addNewsCategory.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addNewsCategoryTitle', aria-hidden='true' )
+              form(method='post', action='/admin/news/add')
+                .modal-dialog.modal-dialog-centered(role='document')
+                  .modal-content
+                    .modal-header
+                      h5.modal-title Add category
+                      button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                    .modal-body
+                      label Name of category
+                      input.form-control(name='name', type='text', placeholder='Enter the name')
+                      small#categoryHelp.form-text.text-muted Enter the name of the news category
+                    .modal-footer
+                      button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+                      button.btn.btn-danger(type='submit') Save
+            a.button.btn.btn-danger.btn-sm.mr-1(type='button')
+              i.fa.fa-trash(aria-hidden='true')
+              | Delete

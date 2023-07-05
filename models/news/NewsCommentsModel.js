@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const Populate = require('../utils/autopopulate')
-const mongoosePaginate = require('mongoose-paginate-v2')
+const Populate = require('../../utils/autopopulate')
 
 const commentSchema = new mongoose.Schema({
     author: { 
@@ -46,8 +45,6 @@ const commentSchema = new mongoose.Schema({
             createdAt: 'created_on', updatedAt: 'updated_on'
     }
 })
-
-commentSchema.plugin(mongoosePaginate)
 
 commentSchema
     .pre('findOne', Populate('author'))

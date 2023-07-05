@@ -1,4 +1,4 @@
-const Article = require('../../models/article')
+const Article = require('../../models/articles/ArticleModel')
 
 exports.listOfArticles = function(req, res) {
     const aggregatelistOfArticles = Article.aggregate([

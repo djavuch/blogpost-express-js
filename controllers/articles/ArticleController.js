@@ -1,5 +1,5 @@
-const Article = require('../../models/article')
-const User = require('../../models/user')
+const Article = require('../../models/articles/ArticleModel')
+const User = require('../../models/users/UserModel')
 
 // Article add create on GET
 exports.getAddArticle = function (req, res) {

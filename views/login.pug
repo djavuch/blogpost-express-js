@@ -5,7 +5,7 @@
       .dropdown-menu.logged
         form.px-4.py-3
           .col.mt-2
-            a.dropdown-item(href=`/users/${user.username}`) Profile
+            a.dropdown-item(href='/users/me') Profile
           .col.mt-2
             if user.role === 'admin'
               a.dropdown-item(href="/admin") Admin panel
@@ -31,4 +31,4 @@
           button.btn.btn-primary(type='submit') Sign in
           .dropdown-divider
           a.dropdown-item(href='/users/signup') New around here? Sign up
-          a.dropdown-item(href='#') Forgot password?
+          a.dropdown-item(href='/users/password/forgot') Forgot password?
