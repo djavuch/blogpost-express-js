@@ -1,75 +1,78 @@
 const Article = require('../../models/articles/ArticleModel')
-const User = require('../../models/users/UserModel')
-
-// Article add create on GET
-exports.getAddArticle = function (req, res) {
-    res.render('ArticleViews/add_article'), 
-    {
-        title: 'Add Article'
-    }
-}
-
-// Article add create on POST
-exports.addArticle = function (req, res) {
-    let article = new Article()
-    article.title = req.body.title
-    article.author = req.user._id
-    article.body = req.body.body
-
-    article.save(function(err) {
-        if(err){
-            console.log(err)
-            return
-        } else {
-            req.flash('success', 'Article added')
-            res.redirect('/')
-        }
-    })
-}
-
-// Article edit create on GET
-exports.getEditArticle = function (req, res) {
-    Article.findById(req.params.id, function(err, article) {
-        res.render('ArticleViews/edit_article', {
-            title: 'Edit Article',
-            article: article
-        })
-    })
-}
-
-// Article edit create on POST
-exports.editArticle = function (req, res) {
-    let article = {}
-    article.title = req.body.title
-    article.author = req.user._id
-    article.body = req.body.body
-
-    let query = { _id: req.params.id }
-
-    Article.updateOne(query, article, function(err) {
-        if(err){
-            console.log(err)
-            return
-        } else {
-            res.redirect('/')
-        }
-    })
-}
-
-// Delete Article
-exports.deleteArticle = async function (req, res) {
-    await Article.findByIdAndDelete(req.params.id)
-    res.redirect('/')
-}
+const ArticleComment = require('../../models/articles/ArticleCommentsModel')
 
 // Get single Article
-exports.getArticle = function (req, res) {
-    Article.findById(req.params.id).populate('articleComments').lean()
-        .then(article => res.render('ArticleViews/article', { 
-            article 
-        }))
-        .catch((err) => {
-            console.log(err.message)
-    })
+exports.getArticle = async  (req, res, next) => {
+  const commentPerPage = 10
+  const page = (parseInt(req.query.page)) || 1
+  const skipComments = (page - 1) * commentPerPage
+
+  try {
+    const article = await Article.findOne({ slug: req.params.articleSlug })
+      .populate({
+        path: 'comments',
+        options: {
+          skip: skipComments,
+          limit: commentPerPage
+        }
+      })
+
+    if (!article) {
+      req.flash('info', 'This article was not found or has been removed.')
+      return res.redirect('/')
+    }
+
+    const commentCount = await ArticleComment.countDocuments({ articleId: article })
+
+    const pages = Math.ceil(commentCount / commentPerPage)
+    const prevPage = page === 1 ? null : page - 1
+    const nextPage = page < Math.ceil(commentCount / commentPerPage)
+
+    if (article) {
+      return res.render('articles/article', {
+        title: article.title,
+        article,
+        comments: article.comments,
+        currentPage: page,
+        pages,
+        prevPage,
+        nextPage
+      })
+    }
+  } catch (err) {
+
+  }
 }
 
+// All articles on GET
+exports.getAllArticles = async (req, res) => {
+  try {
+    const articlesPerPage = 15
+    const page = (parseInt(req.query.page)) || 1
+    const skipPage = (page - 1) * articlesPerPage
+
+    const articles = await Article.find({})
+      .limit(articlesPerPage)
+      .skip(skipPage)
+
+    const articlesCount = await Article.countDocuments(articles)
+
+    const pages = Math.ceil(articlesCount / articlesPerPage)
+    const prevPage = page === 1 ? null : page - 1
+    const nextPage = page < Math.ceil(articlesCount / articlesPerPage)
+
+    if (articles) {
+      return res.render('articles/all_articles', {
+        title: 'Personal blog',
+        articles,
+        currentPage: page,
+        pages,
+        prevPage,
+        nextPage,
+        newsPerPage: articlesPerPage
+      })
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}

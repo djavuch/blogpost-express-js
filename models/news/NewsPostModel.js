@@ -5,8 +5,8 @@ const Comment = require('./../news/NewsCommentsModel')
 const slugify = require('slugify')
 const createDomPurify = require('dompurify')
 const { JSDOM } = require('jsdom')
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 const dompurify = createDomPurify(new JSDOM().window)
 
 const newsPostSchema = new mongoose.Schema({
@@ -33,7 +33,7 @@ const newsPostSchema = new mongoose.Schema({
   },
   comments: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment'
+    ref: 'NewsComment'
   }],
   slug: {
     type: String,
@@ -75,8 +75,8 @@ newsPostSchema
         lower: true, strict: true
       })
     }
-    if (this.body) {
-      this.body = dompurify.sanitize(this.body)
+    if (this.text) {
+      this.text = dompurify.sanitize(this.text)
     }
   })
 

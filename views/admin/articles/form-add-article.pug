@@ -1,0 +1,40 @@
+extends ../layouts/_layout
+
+block variables
+	- var activePage = 'form-components'
+	- var activeGroup = 'forms'
+
+block title
+	title #{title} | Blog about nothing and everything
+
+block content
+	.app-title
+		div
+			h1
+				i.fa.fa-edit
+				|  Adding article
+			p Write an interesting article but remember the rules!
+
+		ul.app-breadcrumb.breadcrumb
+			li.breadcrumb-item
+				i.fa.fa-home.fa-lg
+			li.breadcrumb-item
+				a(href='/admin') Main
+			li.breadcrumb-item
+				a(href='/admin/articles')= 'Articles'
+			li.breadcrumb-item
+				| Add article
+
+	.row
+		.col-md-12
+			.tile
+				form(method='post', action='/admin/articles/add')
+					.form-group
+						label(for='inputTitle') News title
+						input#inputTitle.form-control(name='title', type='text', placeholder='Enter article title')
+						small#emailHelp.form-text.text-muted Come up with the most concise title to attract the reader. Remember, clickbait is punishable!
+					.form-group
+						label Article textarea
+						textarea#my-expressjs-tinymce-app.form-control(name='text', rows='3')
+					.tile-footer
+						button.btn.btn-primary(type='submit') Submit

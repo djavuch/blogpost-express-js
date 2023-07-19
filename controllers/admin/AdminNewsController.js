@@ -44,20 +44,19 @@ exports.addNews = async (req, res) => {
     post.isTopNews = Boolean(req.body.isTopNews)
 
     if(req.file) {
-      post.previewImage = req.file.path.replace(/\\/g,'/')
+      const dimension = await imageSize(req.file.path.replace(/\\/g,'/'))
 
-      const dimension = await imageSize(req.file.path)
-
-      if(dimension.width < 1100 && dimension.height < 360) {
-        await fs.unlinkSync(req.file.path)
+      if(dimension.width < 1100 || dimension.height < 360) {
+        await fs.unlinkSync(req.file.path.replace(/\\/g,'/'))
         req.flash('warning', 'Preview image size should be 1100x360.')
         res.redirect('back')
       }
+      post.previewImage = `/uploads/news/${req.file.filename}`
     }
 
-    const posts = await NewsPost.findOne({ hotNews: true })
+    const posts = await NewsPost.findOne({ isTopNews: true })
     if (posts) {
-      await NewsPost.updateMany({ hotNews: false })
+      await NewsPost.updateMany({ isTopNews: false })
     }
 
     await post.save()
@@ -71,7 +70,14 @@ exports.addNews = async (req, res) => {
 
 exports.editNews = async (req, res) => {
   try {
-    const news = { _id: req.params.id}
+    const news = await NewsPost.findOne({ _id: req.params.newsId })
+
+    const news_data = {
+      category: req.body.category,
+      title: req.body.title,
+      text: req.body.text,
+      isTopNews: Boolean(req.body.isTopNews),
+    }
 
     if(req.file) {
       const dimension = await imageSize(req.file.path)
@@ -81,19 +87,20 @@ exports.editNews = async (req, res) => {
         req.flash('warning', 'Preview image size should be 1100x360.')
         return res.redirect('back')
       }
-      fs.existsSync(path.join(__dirname, '../../', news.previewImage))
-      fs.unlinkSync(path.join(__dirname, '../../', news.previewImage))
+
+      if(news.previewImage !== '') {
+        try {
+          fs.existsSync(path.join(__dirname, '../../', news.previewImage))
+          fs.unlinkSync(path.join(__dirname, '../../', news.previewImage))
+        } catch (err) {
+          console.log(err)
+        }
+      }
+
+      news_data.previewImage = `/uploads/news/${req.file.filename}`
     }
 
-    const news_data = {
-      category: req.body.category,
-      title: req.body.title,
-      text: req.body.text,
-      isTopNews: Boolean(req.body.isTopNews),
-      previewImage: req.file?.path.replace(/\\/g,'/')
-    }
-
-    await NewsPost.findOneAndUpdate(news, news_data, { new: true })
+    await NewsPost.findOneAndUpdate({ _id: news }, news_data, { new: true })
 
     return res.redirect('/admin/news')
   } catch (err) {
@@ -102,7 +109,7 @@ exports.editNews = async (req, res) => {
 }
 
 exports.editNewsView = async (req, res) => {
-  const news = await NewsPost.findById(req.params.id)
+  const news = await NewsPost.findOne({ _id: req.params.newsId })
   res.render('admin/news/form-edit-news', {
     title: news.title,
     news

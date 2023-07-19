@@ -231,28 +231,11 @@ blog-post-title {
   font-weight: 700 !important;
 }
 
-.reply-link {
+.comment-btn {
   text-shadow: 1px 1px 3px rgba(44, 42, 42, 0.863);
   color: #6b50a8;
   position: relative;
   text-decoration: none;
-}
-
-.delete-btn {
-  text-shadow: 1px 1px 3px rgba(44, 42, 42, 0.863);
-  color: #6b50a8;
-  position: relative;
-  text-decoration: none;
-}
-
-.inner-rep {
-  margin: -10px 10px 0px 0px;
-  display: inline-block;
-}
-
-.inner {
-  margin: -10px 10px 0px 0px;
-  display: inline-block;
 }
 
 .rounded-circle {

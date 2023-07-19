@@ -1,10 +1,10 @@
-const mongoose = require('mongoose')
 const NewsPost = require('../../models/news/NewsPostModel')
 const NewsCategory = require('../../models/news/NewsCategoryModel')
-const Comment = require('../../models/news/NewsCommentsModel')
+const NewsComment = require('../../models/news/NewsCommentsModel')
+const assert = require("assert");
 
 // News by category
-exports.getNewsByCategory = async (req, res, next) => {
+exports.getNewsByCategory = async (req, res) => {
   try {
     const newsPerPage = 15
     const page = (parseInt(req.query.page)) || 1
@@ -40,7 +40,7 @@ exports.getNewsByCategory = async (req, res, next) => {
       })
     }
   } catch (err) {
-    next(err)
+    console.log(err)
   }
 }
 
@@ -93,7 +93,7 @@ exports.getNews = async (req, res, next) => {
         }
       }).exec()
 
-    const commentCount = await Comment.countDocuments({newsId: news})
+    const commentCount = await NewsComment.countDocuments({newsId: news})
       .exec()
 
     const pages = Math.ceil(commentCount / commentPerPage)

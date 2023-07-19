@@ -74,9 +74,9 @@ app.use(require('express-flash')())
 // Route file
 let main = require('./routes/main')
 let articles = require('./routes/articles')
-let users = require('./routes/users')
+let users = require('./routes/users/usersRoute')
 let news = require('./routes/news')
-let admin = require('./routes/adminRoute')
+let admin = require('./routes/admin/adminRoute')
 
 // Mount routes
 app.use('/', main)

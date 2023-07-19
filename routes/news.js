@@ -1,8 +1,6 @@
 const express = require('express')
 const router = express.Router()
 
-// Require middleware
-const { roleAuthentication } = require('../middleware/authentication')
 
 // Require controllers
 const NewsController = require('../controllers/news/NewsController')
@@ -23,9 +21,9 @@ router.get('/:news_slug', NewsController.getNews)
 router.post('/:newsId/send', NewsCommentsController.addComment)
 
 // Edit news comments
-router.post('/:newsId/comments/edit/:id', roleAuthentication('admin', 'moderator'), NewsCommentsController.editComment )
+router.put('/:newsId/comments/:commentId/edit', NewsCommentsController.editComment )
 
 // Delete comments
-router.delete('/:newsId/comments/:id', roleAuthentication('admin', 'moderator'), NewsCommentsController.deleteComment)
+router.delete('/:newsId/comments/:commentId', NewsCommentsController.deleteComment)
 
 module.exports = router

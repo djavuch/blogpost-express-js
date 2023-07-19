@@ -14,53 +14,59 @@ block content
         each comment, index_comment in news.comments
           .d-flex.mb-4
             .flex-shrink-0
-              img.rounded-circle(src= comment.author.avatar width='75' height='75')
+              if !comment.author.avatar
+                img.rounded-circle(src= '/assets/no-avatar.png', width='75', height='75')
+              else
+                img.rounded-circle(src= comment.author.avatar, width='75', height='75')
             .ms-3
-              .fw-bold #{comment.author.username} #{comment.datePosted.toLocaleDateString()}
+              span.fw-bold.mr-2= comment.author.username
+              span.small.text-muted= comment.created_on.toLocaleDateString()
               p= comment.commentText
                 // Comments buttons
                 .inner
                   p.parent-comment-reply
-                    a.reply-link(type='button', data-toggle='collapse', data-target= "#response_" + index_comment, aria-expanded='false', aria-controls='response')
-                      | Reply
-                    .collapse(id= "response_" + index_comment)
+                    if user
+                      a.comment-btn.mr-2(type='button', data-toggle='collapse', data-target=`#response_${index_comment}`, aria-expanded='false', aria-controls='response')
+                        | Reply
+                    if user
+                      if user.id === comment.author.id || user.role === 'admin' || user.role === 'moderator'
+                        a.comment-btn.mr-2(type='button', data-toggle='modal', data-target=`#editComment_${comment._id}`)
+                          | Edit
+                        a.comment-btn.mr-2(type='button', data-toggle='modal', data-target=`#deleteComment_${comment._id}`)
+                          | Delete
+                    .collapse(id=`response_${index_comment}`)
                       form.mb-4(method='POST' name='parentCommentId' action=`/news/${news._id}/send`)
                         textarea.form-control(rows='3' cols='150' name='commentText' type='reply' placeholder='Join the discussion and leave a comment!')
                         input.btn-small.btn-primary.float-right(type='submit' value='Send')
-                // Edit button
-                .inner
-                  button.btn.btn-primary(type='button' data-toggle='modal' data-target='#editComment_' + comment._id)
-                    | Edit
-                  div.modal.fade(id= 'editComment_' + comment._id tabindex='-1', role='dialog', aria-labelledby='editComment_' + comment._id, aria-hidden='true')
-                    .modal-dialog.modal-dialog-centered(role='document')
-                      .modal-content
-                        .modal-header
-                          h5#exampleModalLongTitle.modal-title Edit comment
-                          button.close(type='button' data-dismiss='modal' aria-label='Close')
+
+                // Edit comment modal
+                div.modal.fade(id=`editComment_${comment._id}`, tabindex='-1', role='dialog', aria-labelledby=`label_${comment._id}`, aria-hidden='true')
+                  .modal-dialog.modal-dialog-centered(role='document')
+                    .modal-content
+                      .modal-header
+                        h5.modal-title Edit comment
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
                           span(aria-hidden='true') ×
-                        .modal-body
-                          form.mb-4(method='POST' action=`/news/${news._id}/comments/edit/${comment._id}`)
-                            textarea.form-control(name='commentText' rows='3' cols='150')= comment.commentText
-                            input.btn-small.btn-primary.float-right(type='submit' value='Send')
-                        .modal-footer
-                          button.btn.btn-secondary(type='button' data-dismiss='modal') Close
-                // Delete button
-                .inner
-                  a.delete-btn(type='button' data-toggle='modal' data-target='#comment_' + comment._id)
-                    | Delete
-                  div.modal.fade(id='comment_' + comment._id tabindex='-1' role='dialog' aria-labelledby='comment-label-' + comment._id aria-hidden='true')
-                    .modal-dialog.modal-dialog-centered(role='document')
-                      .modal-content
-                        .modal-header
-                          h5#exampleModalLongTitle.modal-title Delete Comment
-                          button.close(type='button' aria-label='Close')
+                      .modal-body
+                        form.mb-4(method='POST', action=`/news/${news._id}/comments/${comment._id}/edit?_method=PUT`)
+                          textarea.form-control(name='commentText' rows='3' cols='150')= comment.commentText
+                          input.btn-small.btn-primary.float-right(type='submit' value='Send')
+                      .modal-footer
+                        button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                // Delete comment modal
+                div.modal.fade(id=`deleteComment_${comment._id}`, tabindex='-1', role='dialog', aria-labelledby=`label_${comment._id}`, aria-hidden='true')
+                  .modal-dialog.modal-dialog-centered(role='document')
+                    .modal-content
+                      .modal-header
+                        h5.modal-title Delete Comment
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
                           span(aria-hidden='true') ×
-                        .modal-body
-                          | Are you sure you want to delete the comment? This action will completely remove it from the database.
-                        .modal-footer
-                          button.btn.btn-secondary(type='button') Close
-                          form.d-inline(action='/news/' + news._id + '/comments/' + comment._id + '?_method=DELETE' method='POST')
-                            button.btn.btn-danger(type='submit') Delete
+                      .modal-body
+                        | Are you sure you want to delete the comment? This action will completely remove it from the database.
+                      .modal-footer
+                        button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                        form.d-inline(action=`/news/${news._id}/comments/${comment._id}?_method=DELETE`, method='POST')
+                          button.btn.btn-danger(type='submit') Delete
   // Navigation block
   nav(aria-label='Comments navigation')
   if pages > 1

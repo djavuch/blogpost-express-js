@@ -1,28 +1,29 @@
-const Comment = require('../../models/news/NewsCommentsModel')
+const NewsComment = require('../../models/news/NewsCommentsModel')
 const NewsPost = require('../../models/news/NewsPostModel')
 
 // Add comment
-exports.addComment = async (req, res, next) => {
+exports.addComment = async (req, res) => {
   try {
     const newsid = req.params.newsId
 
     const news = await NewsPost.findOne({ _id: newsid })
+
     if (!news) {
       req.flash('danger', 'News not found')
       return res.redirect(404)
     }
 
-    const comment = new Comment({
+    const newsComment = new NewsComment({
       commentText: req.body.commentText,
       author: req.user._id,
       newsId: newsid
     })
 
     if (req.body.parentCommentId) {
-      comment.parentComment = req.body.parentCommentId
+      newsComment.parentComment = req.body.parentCommentId
     }
 
-    const createComment = await comment.save()
+    const createComment = await newsComment.save()
 
     news.comments.push(createComment._id)
 
@@ -30,7 +31,7 @@ exports.addComment = async (req, res, next) => {
 
     res.redirect(`/news/${news.slug}`)
   } catch (err) {
-    next(err)
+    console.log(err)
   }
 }
 
@@ -39,6 +40,8 @@ exports.editComment = async (req, res, next) => {
   try {
     const newsid = req.params.newsId
 
+    const { user } = req
+
     const news = await NewsPost.findOne({ _id: newsid })
     if (!news) {
       req.flash('danger', 'News not found')
@@ -46,7 +49,14 @@ exports.editComment = async (req, res, next) => {
     }
     const { commentText } = req.body
 
-    Comment.findByIdAndUpdate(req.params.id, { commentText }, (err, updatedComment) => {
+    const commentId = { _id: req.params.commentId }
+
+    if(!commentId.author  && user.role !== 'admin' && user.role !== 'moderator') {
+      req.flash('warning', 'You do not have permission to do this action.')
+      return res.redirect('back')
+    }
+
+    NewsComment.findByIdAndUpdate(commentId, { commentText }, (err, updatedComment) => {
       if (err) {
         console.log(err)
       } else {
@@ -63,16 +73,23 @@ exports.editComment = async (req, res, next) => {
 exports.deleteComment = async (req, res, next) => {
   try {
     // Find comment in DB
-    const comment = await Comment.findOne({ _id: req.params.id })
-    if (!comment) {
+    const newsComment = await NewsComment.findOne({ _id: req.params.commentId })
+
+    if (!newsComment) {
       return res.status(404)
     }
-    comment.remove()
+
+    if(!newsComment.author  && user.role !== 'admin' && user.role !== 'moderator') {
+      req.flash('warning', 'You do not have permission to do this action.')
+      return res.redirect('back')
+    }
+
+    newsComment.remove()
 
     // Remove comment from news body
-    const news = await NewsPost.findByIdAndUpdate({ _id: comment.newsId },
+    const news = await NewsPost.findByIdAndUpdate({ _id: newsComment.newsId },
       {
-        $pull: { comments: req.params.id }
+        $pull: { comments: req.params.commentId }
       }
     ).exec()
 

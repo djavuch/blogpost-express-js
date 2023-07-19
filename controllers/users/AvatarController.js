@@ -26,7 +26,6 @@ exports.uploadAvatar = async (req, res, next) => {
     await sharp(req.file.path)
       .resize({ width: 150, height: 150 })
       .toFile(path.resolve(req.file.destination, 'avatars', req.file.filename))
-
     // Remove source image
     fs.unlinkSync(req.file.path)
 

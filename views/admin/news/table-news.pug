@@ -49,7 +49,7 @@ block content
 									- newsCounter= 1 + index + currentPage * newsPerPage - newsPerPage
 									td= newsCounter
 									td= news.title
-									td= news.author.name
+									td= news.author.name || null
 									td= news.category.name || null
 									td= news.created_on.toLocaleDateString()
 									td= news.updated_on.toLocaleDateString()

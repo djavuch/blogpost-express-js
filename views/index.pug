@@ -41,7 +41,7 @@ block content
         each news, i in newswire
           .blog-post
             #news-meta= news.created_on.toLocaleDateString()
-            a(class= "blog-post-title" href= '/news/' + news.slug)= news.title
+            a(class='blog-post-title', href=`/news/${news.slug}`)= news.title
         if newsPerPage > 6
           a.btn.btn-outline-primary.rounded-pill(href='/news/newswire') All news
       .col-md-4.article-block
@@ -50,7 +50,9 @@ block content
         each article, i in articles
           .blog-post
             #article-meta= article.created_on.toLocaleDateString()
-            a(class= "blog-post-title" href= '/articles/' + article._id)= article.title
+            a(class='blog-post-title', href=`/articles/${article.slug}`)= article.title
+        if articlesPerPage > 6
+          a.btn.btn-outline-primary.rounded-pill(href='/articles') All articles
       include sidebar
 
     //- nav(aria-label='Page navigation example')
