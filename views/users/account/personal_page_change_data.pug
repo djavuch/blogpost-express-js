@@ -1,0 +1,47 @@
+form.form(method='POST', action='/users/me/edit/save')
+  .row
+    .col
+      .row
+        .col
+          .form-group
+            label Full Name
+            input.form-control(type='text', name='name', placeholder='John Smith', value= user.name)
+        .col
+          .form-group
+            label Email
+            input.form-control(type='email', name='username', placeholder='johnny.s', value= user.email)
+      .row
+        .col.mb-3
+          .form-group
+            label About
+            textarea.form-control(rows='5', name='about', placeholder='My Bio')= user.about
+      .row
+        .col
+          .form-group
+            label WebSite
+            input.form-control(type='text', name='website', placeholder='John Smith', value= user.website)
+        .col
+          .form-group
+            label Github
+            input.form-control(type='text', name='github', placeholder='johnny.s', value= user.github)
+      .row
+        .col
+          .form-group
+            label Facebook
+            input.form-control(type='text', name='facebook', placeholder='John Smith', value= user.facebook)
+        .col
+          .form-group
+            label Instagram
+            input.form-control(type='text', name='instagram', placeholder='johnny.s', value= user.instagram)
+      .row
+        .col
+          .form-group
+            label Reddit
+            input.form-control(type='text', name='reddit', placeholder='John Smith', value= user.reddit)
+        .col
+          .form-group
+            label Twitter
+            input.form-control(type='text', name='twitter', placeholder='johnny.s', value= user.twitter)
+  .row
+    .col.d-flex.justify-content-end
+      button.btn.btn-primary(type='submit') Save Changes

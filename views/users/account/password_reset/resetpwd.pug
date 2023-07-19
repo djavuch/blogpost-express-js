@@ -1,0 +1,17 @@
+extends ../../../layout
+
+block content
+  .container.my-5
+    section
+      h3.font-weight-normal.text-center.dark-grey-text.pb-2.display-4
+        strong Reset password
+      hr.w-header.my-4
+      p.lead.text-center.text-muted.pt-2.mb-5
+        | Enter your email address to receive a password reset link
+      .row.d-flex.justify-content-center
+        .col-6
+          form.form-signup(method='POST', action='/users/password/send')
+            // Block email
+            .md-form.md-outline.form-lg
+              input#formEmail.form-control.form-control-lg(name='email' type='text' placeholder='Email'  autofocus='')
+            button.btn.btn-block.btn-primary.btn-lg.mt-3 Continue

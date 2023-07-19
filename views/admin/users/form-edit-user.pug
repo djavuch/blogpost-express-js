@@ -1,0 +1,126 @@
+extends ../layouts/_layout
+
+block variables
+  - var activePage = 'form-samples'
+  - var activeGroup = 'forms'
+
+block title
+  title Edit #{title + '\'s'} profile - 'Blog about nothing and everything'
+
+block content
+  .app-title
+    div
+      h1
+        i.fa.fa-edit
+        |  Edit #{title + '\'s'} profile
+
+    ul.app-breadcrumb.breadcrumb
+      li.breadcrumb-item
+        i.fa.fa-home.fa-lg
+      li.breadcrumb-item
+        a(href='/admin') Main
+      li.breadcrumb-item
+        a(href='/admin/users')= 'Users list'
+      li.breadcrumb-item
+        | Edit #{title + '\'s'} profile
+
+  form(method='POST', enctype='multipart/form-data',  action=`/admin/users/edit/${profile._id}?_method=PUT`)
+    .row
+      .col-md-6
+        .tile
+          h3.tile-title Main fields
+          .tile-body
+            form
+              .form-group
+                label.control-label Username
+                input.form-control(name='username', type='text', value= profile.username)
+
+              .form-group
+                label.control-label Name
+                input.form-control(name='name', type='text', value=profile.name)
+
+              .form-group
+                label.control-label Email
+                input.form-control(name='email', type='email', value=profile.email)
+
+              //.form-group
+              //  label(for='selectUserRole') User role
+              //  select#selectUserRole.form-control(name='role')
+              //    option(value=(profileForAdmin.role === 'admin'), selected=(profileForAdmin.role === 'admin' ? 'selected': false)) Admin
+              //    option(value=(profileForAdmin.role === 'moderator'), selected=(profileForAdmin.role === 'moderator' ? 'selected': false)) Moderator
+              //    option(value=(profileForAdmin.role === 'journalist'), selected=(profileForAdmin.role === 'journalist' ? 'selected': false)) Journalist
+              //    option(value=(profileForAdmin.role === 'reader'), selected=(profileForAdmin.role === 'reader' ? 'selected': false)) Reader
+
+              //.form-group
+              //  label.control-label Gender
+              //  .form-check
+              //    label.form-check-label
+              //      input.form-check-input(type='radio', name="gender")
+              //      | Male
+              //  .form-check
+              //    label.form-check-label
+              //      input.form-check-input(type='radio', name="gender")
+              //      | Female
+
+      .col-md-6
+        .tile
+          h3.tile-title Additional fields
+          .tile-body
+            .form-group.row
+              label.control-label.col-md-1 Instagram
+              .col-md-8
+                input.form-control(name='instagram', type='text', value= profile.instagram)
+
+            .form-group.row
+              label.control-label.col-md-1 Facebook
+              .col-md-8
+                input.form-control(name='facebook', type='text', value= profile.facebook)
+
+            .form-group.row
+              label.control-label.col-md-1 Reddit
+              .col-md-8
+                input.form-control(name='reddit', type='text', value= profile.reddit)
+
+            .form-group.row
+              label.control-label.col-md-1 Github
+              .col-md-8
+                input.form-control(name='github', type='text', value= profile.github)
+
+            .form-group.row
+              label.control-label.col-md-1 Twitter
+              .col-md-8
+                input.form-control(name='twitter', type='text', value= profile.twitter)
+
+            .form-group.row
+              label.control-label.col-md-1 Website
+              .col-md-8
+                input.form-control(name='website', type='text', value= profile.website)
+
+            form-group.row
+              label.control-label.col-md-1 About
+              .col-md-8
+                textarea.form-control(name='about', rows="4")= profile.about
+
+      .clearix
+
+      .col-md-6
+        .tile
+          h3.tile-title Change avatar
+
+          .tile-body
+            .row.gutters-sm
+              .col-md-2.mb-2
+                .d-flex.flex-column.align-items-center.text-center
+                  if profile.avatar === ''
+                    img.rounded-circle(src= '/assets/no-avatar.png')
+                  else
+                    img.rounded-circle(src= profile.avatar)
+            .form-group
+              label.control-label.md-1 Upload avatar
+              .col-md-4
+                input.form-control(type='file', name='avatar')
+          .tile-footer
+            button.btn.btn-primary(type='submit')
+              i.fa.fa-fw.fa-lg.fa-check-circle
+              | Save
+            | &nbsp;&nbsp;&nbsp;

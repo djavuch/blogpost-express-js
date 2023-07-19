@@ -1,0 +1,35 @@
+// Errors
+if messages.error
+  for error in messages.error
+    .bs-component.pb-5
+      .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+        div= error
+          button.close(type='button', data-dismiss='alert', aria-label='Close')
+            span(aria-hidden='true') &times;
+
+// Warning
+if messages.warning
+  for warning in messages.warning
+    .bs-component.pb-5
+      .alert.alert-warning.alert-dismissible.fade.show(role='alert')
+        div= warning
+          button.close(type='button', data-dismiss='alert', aria-label='Close')
+            span(aria-hidden='true') &times;
+
+// Success
+if messages.success
+  .bs-component.pb-5
+    .alert.alert-success.alert-dismissible.fade.show(role='alert')
+      for success in messages.success
+        div= success
+      button.close(type='button', data-dismiss='alert', aria-label='Close')
+        span(aria-hidden='true') &times;
+
+// Info
+if messages.info
+  .bs-component.pb-5
+    .alert.alert-info.alert-dismissible.fade.show(role='alert')
+      for info in messages.info
+        div= info.message
+      button.close(type='button', data-dismiss='alert', aria-label='Close')
+        span(aria-hidden='true') &times;

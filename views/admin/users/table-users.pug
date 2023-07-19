@@ -1,0 +1,110 @@
+extends ../layouts/_layout
+
+block variables
+	- var activePage = 'basic-table'
+	- var activeGroup = 'tables'
+
+block title
+	title #{title} | Blog about nothing and everything
+
+block content
+	.app-title
+		div
+			h1
+				i.fa.fa-th-list
+				|  News list
+			p News published on the website
+
+		ul.app-breadcrumb.breadcrumb
+			li.breadcrumb-item
+				i.fa.fa-home.fa-lg
+			li.breadcrumb-item
+				a(href='/admin') Main
+			li.breadcrumb-item
+				| List of users
+
+	.row
+		.col-md-12
+			.tile
+				.table-responsive
+					table.table
+						thead
+							tr
+								th
+									input#checkall(type='checkbox')
+								th #
+								th Username
+								th Register date
+								th Actions
+						each profile, index in listOfUsers
+							tbody
+								tr
+									td
+										input.checkthis(type='checkbox')
+									- usersListCounter= 1 + index + currentPage * usersPerPage - usersPerPage
+									td= usersListCounter
+									td= profile.username
+									td= profile.date.toLocaleString('ru-RU')
+									td
+										a.button.btn.btn-primary.btn-sm.mr-1(role='button', href=`/admin/users/edit/${profile._id}`) Edit
+										button.btn.btn-danger.btn-sm(type='button', data-toggle='modal', data-target= `#user_${profile._id}`) Delete
+										div.modal.fade(id=`user_${profile._id}`, tabindex='-1', role='dialog', aria-labelledby=`label_${profile._id}`, aria-hidden='true')
+											.modal-dialog.modal-dialog-centered(role='document')
+												.modal-content
+													.modal-header
+														h5.modal-title Delete news
+														button.close(type='button', data-dismiss='modal', aria-label='Close')
+															span(aria-hidden='true') ×
+													.modal-body
+														p Are you sure you want to delete the news? This action will completely remove it from the database.
+													.modal-footer
+														button.btn.btn-secondary(type='button') Close
+														form.d-inline(action=`/admin/users/${profile._id}?_method=DELETE`, method='POST')
+															button.btn.btn-danger(type='submit') Delete
+					// Navigation block
+					nav(aria-label='Comments navigation')
+					if pages > 1
+						ul.pagination.justify-content-center
+							if currentPage == 1
+								li.page-item.disabled
+									a.page-link First
+							else
+								li.page-item
+									a.page-link(href=`/admin/users/?page=1`) First
+							if prevPage
+								li.page-item
+									a.page-link(href=`/admin/users/?page=${currentPage - 1}`) «
+							else
+								li.page-item.disabled
+									a.page-link(href='#' tabindex='-1' aria-disabled='true') «
+							// Cutting off the left numbers
+							- paginationNumber = currentPage > 5 ? currentPage - 4 : 1
+							if paginationNumber !== 1
+								li.page-item.disabled
+									a.page-link ...
+							//Current page logic
+							while paginationNumber <= currentPage + 4 && paginationNumber <= pages
+								if paginationNumber == currentPage
+									li.page-item.active
+										a.page-link(href=`/admin/users/?page=${paginationNumber}`)= paginationNumber
+								else
+									li.page-item
+										a.page-link(href=`/admin/users/?page=${paginationNumber}`)= paginationNumber
+								// Cutting off the right numbers
+								if (paginationNumber == currentPage + 4 && paginationNumber < pages)
+									li.page-item.disabled
+										a.page-link ...
+								- paginationNumber++
+							// Next page button logic
+							if nextPage
+								li.page-item
+									a.page-link(href=`/admin/users/?page=${currentPage + 1}`) »
+							else
+								li.page-item.disabled
+									a.page-link(href='#' tabindex='-1' aria-disabled='true') »
+							if currentPage == pages
+								li.page-item.disabled
+									a.page-link Last
+							else
+								li.page-item
+									a.page-link(href=`/admin/users/?page=${pages}`) Last

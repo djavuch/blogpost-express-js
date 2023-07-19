@@ -1,0 +1,40 @@
+extends ../layouts/_layout
+
+block variables
+  - var activePage = 'form-components'
+  - var activeGroup = 'forms'
+
+block title
+  title #{title} | Blog about nothing and everything
+
+block content
+  .app-title
+    div
+      h1
+        i.fa.fa-edit
+        |  Edit article
+      p Bootstrap default form components
+
+    ul.app-breadcrumb.breadcrumb
+      li.breadcrumb-item
+        i.fa.fa-home.fa-lg
+      li.breadcrumb-item
+        a(href='/admin') Main
+      li.breadcrumb-item
+        a(href='/admin/articles')= 'Articles'
+      li.breadcrumb-item
+        | Edit - #{title}
+
+  .row
+    .col-md-12
+      .tile
+        form(method='post', action=`/admin/articles/edit/${article._id}?_method=PUT`)
+          .form-group
+            label(for='inputArticleTitle') Article title
+            input#inputArticleTitle.form-control(name='title', type='text', value=article.title)
+            small#newsHelp.form-text.text-muted Come up with the most concise title to attract the reader. Remember, clickbait is punishable!
+          .form-group
+            label Example textarea
+            textarea#my-expressjs-tinymce-app.form-control(name='text', rows='3')= article.text
+          .tile-footer
+            button.btn.btn-primary(type='submit') Submit

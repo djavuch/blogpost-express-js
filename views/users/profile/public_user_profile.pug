@@ -1,0 +1,81 @@
+extends ../../layout
+
+block content 
+  .container
+    .main-body
+      // Breadcrumb
+      nav.main-breadcrumb(aria-label='breadcrumb')
+        ol.breadcrumb
+          li.breadcrumb-item
+            a(href='/') Home
+          li.breadcrumb-item.active(aria-current='page')= profile.username + '\'s' + ' ' + 'profile'
+      // Breadcrumb
+      .row.gutters-sm
+        .col-md-4.mb-3
+          .card
+            .card-body
+              .d-flex.flex-column.align-items-center.text-center
+                if profile.avatar === ''
+                  img.rounded-circle(src= '/assets/no-avatar.png')
+                else
+                  img.rounded-circle(src= profile.avatar)
+                .mt-3
+                  h4= profile.name
+                  p.text-secondary.mb-1= profile.role
+                  p.text-muted.font-size-sm Bay Area, San Francisco, CA
+                  //- button.btn.btn-outline-primary Message
+          .card.mt-3
+            ul.list-group.list-group-flush
+              li.list-group-item.d-flex.justify-content-between.align-items-center.flex-wrap
+                h6.mb-0
+                  i.fa.fa-globe.fa-lg.mr-2.icon-inline
+                  | WebSite
+                span.text-secondary= profile.website
+              li.list-group-item.d-flex.justify-content-between.align-items-center.flex-wrap
+                h6.mb-0
+                  i.fa.fa-github.fa-lg.mr-2.icon-inline
+                  | Github
+                span.text-secondary= profile.github
+              li.list-group-item.d-flex.justify-content-between.align-items-center.flex-wrap
+                h6.mb-0
+                  i.fa.fa-twitter.fa-lg.mr-2.icon-inline
+                  | Instagram
+                span.text-secondary= profile.twitter
+              li.list-group-item.d-flex.justify-content-between.align-items-center.flex-wrap
+                h6.mb-0
+                  i.fa.fa-instagram.fa-lg.mr-2.icon-inline
+                  | Instagram
+                span.text-secondary= profile.instagram
+              li.list-group-item.d-flex.justify-content-between.align-items-center.flex-wrap
+                h6.mb-0
+                  i.fa.fa-facebook.fa-lg.mr-2.icon-inline
+                  | Facebook
+                span.text-secondary= profile.facebook
+
+        .col-md-8
+          .card.mb-3
+            .card-body
+              .row
+                .col-sm-3
+                  h6.mb-0 Full Name
+                .col-sm-9.text-secondary= profile.name
+              hr
+              .row
+                .col-sm-3
+                  h6.mb-0 Email
+                .col-sm-9.text-secondary= profile.email
+              hr
+              .row
+                .col-sm-3
+                  h6.mb-0 Where
+                .col-sm-9.text-secondary
+                  | (239) 816-9029
+              hr
+          .row.gutters-sm
+            .col.mb-3
+              .card.h-100
+                .card-body
+                  h6.d-flex.align-items-center.mb-3
+                    i.material-icons.text-info.mr-2 assignment
+                    | About
+                  .col-sm-9.text-secondary= profile.about
