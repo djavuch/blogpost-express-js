@@ -1,0 +1,59 @@
+extends ../layout
+
+block content 
+  .row
+    .col-md-8.news-block
+      h3.pb-4.mb-4.font-italic.border-bottom
+        | Newswire
+      each news, i in monthlyNews
+        .blog-post
+          #news-meta= news.created_on.toLocaleDateString()
+          a(class= "blog-post-title" href= '/news/' + news.slug)= news.title
+    include ../sidebar
+  //Navigation block
+  nav(aria-label='Newswire navigation')
+  if pages > 1
+    ul.pagination.justify-content-center
+      if currentPage == 1
+        li.page-item.disabled
+          a.page-link First
+      else
+        li.page-item
+          a.page-link(href=`/news/archive/${year}/${month}/?page=1`) First
+      if prevPage
+        li.page-item
+          a.page-link(href=`/news/archive/${year}/${month}/?page=${currentPage - 1}`) «
+      else
+        li.page-item.disabled
+          a.page-link(href='#' tabindex='-1' aria-disabled='true') «
+      // Cutting off the left numbers
+      - paginationNumber = currentPage > 5 ? currentPage - 4 : 1
+      if paginationNumber !== 1
+        li.page-item.disabled
+          a.page-link ...
+      //Current page logic
+      while paginationNumber <= currentPage + 4 && paginationNumber <= pages
+        if paginationNumber == currentPage
+          li.page-item.active
+            a.page-link(href=`/news/archive/${year}/${month}/?page=${paginationNumber}`)= paginationNumber
+        else
+          li.page-item
+            a.page-link(href=`/news/archive/${year}/${month}/?page=${paginationNumber}`)= paginationNumber
+        // Cutting off the right numbers
+        if (paginationNumber == currentPage + 4 && paginationNumber < pages)
+          li.page-item.disabled
+            a.page-link ...
+        - paginationNumber++
+      // Next page button logic
+      if nextPage
+        li.page-item
+          a.page-link(href=`/news/archive/${year}/${month}/?page=${currentPage + 1}`) »
+      else
+        li.page-item.disabled
+          a.page-link(href='#' tabindex='-1' aria-disabled='true') »
+      if currentPage == pages
+        li.page-item.disabled
+          a.page-link Last
+      else
+        li.page-item
+          a.page-link(href=`/news/archive/${year}/${month}/?page=${pages}`) Last

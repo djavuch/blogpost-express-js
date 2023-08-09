@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  main.container(role='main')
+    .row
+      .col-md-12.blog-main
+        if newsSearch.length
+          h3.pb-4.mb-4.font-italic.border-bottom
+            | Search results for #{searchQuery}
+        else
+          h3.pb-4.mb-4.font-italic.border-bottom
+            | No results for #{searchQuery}. Please try to refine your search query.
+        each news in newsSearch
+          .blog-post
+            h2.blog-post-title= news.title
+            p.blog-post-meta= news.created_on.toLocaleDateString()
+            p.text-truncate(style='max-width: 500px')= news.description
