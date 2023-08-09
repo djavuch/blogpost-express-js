@@ -9,22 +9,22 @@ const { JSDOM } = require('jsdom')
 const dompurify = createDomPurify(new JSDOM().window)
 
 // Article  Schema
-const articleSchema = mongoose.Schema({
+const articleSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true
   },
   author: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true
   },
   slug: {
-    type: String, required:
-      true,
+    type: String,
+    required: true,
     unique: true
   },
-  text: {
+  description: {
     type: String,
     required: true
   },
@@ -69,5 +69,7 @@ articleSchema.methods.incrementViewsCounter = function incrementViewsCounter() {
   article.views += 1
   article.save()
 }
+
+articleSchema.index({ title: 'text', description: 'text' })
 
 module.exports = mongoose.model('Article', articleSchema)

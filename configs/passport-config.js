@@ -12,7 +12,6 @@ passport.deserializeUser((id, done) => {
     })
 })
 
-
 passport.use(
   new LocalStrategy({usernameField: 'username'}, (username, password, done) => {
 
@@ -38,26 +37,5 @@ passport.use(
       })
     })
 }))
-
-// passport.use(
-//   new LocalStrategy({ usernameField: 'username' }, async (username, password, done) => {
-//         try {
-//             // Match user
-//             const user = await User.findOne({ username: username })
-//             if(!user) return done(null, false, { message: 'Incorrect username or password.' })
-//             // Match password
-//             const isMatch = await user.comparePassword(password)
-//             if(!isMatch)
-//                 return done(null, false, { message: 'Incorrect username or password.' })
-//             // If password is match return user
-//             return done(null, false)
-//         } catch (err) {
-//             console.log(err)
-//             return done(err, false, { message: 'An unexpected error occurred.' })
-//         }
-//     }
-//   )
-// )
-
 
 module.exports = passport

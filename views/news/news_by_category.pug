@@ -4,14 +4,14 @@ block content
   .row
     .col-md-8.news-block
       h3.pb-4.mb-4.font-italic.border-bottom
-        | Newswire
+        | #{category.name}
       each news, i in newswireByCategory
         .blog-post
           #news-meta= news.created_on.toLocaleDateString()
           a(class="blog-post-title" href= '/news/' + news.slug)= news.title
     include ../sidebar
   //Navigation block
-  nav(aria-label='Comments navigation')
+  nav(aria-label='News navigation')
     if pages > 1
       ul.pagination.justify-content-center
         if currentPage == 1

@@ -1,7 +1,6 @@
 const NewsPost = require('../../models/news/NewsPostModel')
 const NewsCategory = require('../../models/news/NewsCategoryModel')
 const NewsComment = require('../../models/news/NewsCommentsModel')
-const assert = require("assert");
 
 // News by category
 exports.getNewsByCategory = async (req, res) => {
@@ -10,7 +9,7 @@ exports.getNewsByCategory = async (req, res) => {
     const page = (parseInt(req.query.page)) || 1
     const skipPage = (page - 1) * newsPerPage
 
-    const category = await NewsCategory.findOne({ title: req.params.category_slug })
+    const category = await NewsCategory.findOne({ slug: req.params.category_slug })
 
 
     if (!category) {
@@ -29,7 +28,7 @@ exports.getNewsByCategory = async (req, res) => {
 
     if (newswireByCategory) {
       return res.render('news/news_by_category', {
-        title: category.title,
+        title: category.name,
         newswireByCategory,
         currentPage: page,
         category,
@@ -117,5 +116,50 @@ exports.getNews = async (req, res, next) => {
 
   } catch (err) {
     next(err)
+  }
+}
+
+exports.getNewsByMonth = async (req, res) => {
+  const newsPerPage = 15
+  const page = (parseInt(req.query.page)) || 1
+  const skipPage = (page - 1) * newsPerPage
+
+  try {
+    const month = req.params.month * 1
+    const year = req.params.year * 1
+    const monthArray = [null, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+    const monthlyNews = await NewsPost.find({
+      $expr: {
+        $and: [{ $eq: [{ $year: '$created_on' }, year ] }],
+        $and: [{ $eq: [{ $month: '$created_on' }, month ] }]
+      }
+    })
+      .sort({ created_on: -1 })
+      .limit(newsPerPage)
+      .skip(skipPage)
+
+    const newsCount = await NewsPost.countDocuments(monthlyNews)
+
+    const pages = Math.ceil(newsCount / newsPerPage)
+    const prevPage = page === 1 ? null : page - 1
+    const nextPage = page < Math.ceil(newsCount / newsPerPage)
+
+
+    if (monthlyNews) {
+      return res.render('news/monthly_feed', {
+        title: monthArray[month] + ' ' + year,
+        monthlyNews,
+        currentPage: page,
+        pages,
+        prevPage,
+        nextPage,
+        newsPerPage,
+        year,
+        month
+      })
+    }
+  } catch (err) {
+    console.log(err)
   }
 }

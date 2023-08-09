@@ -79,7 +79,7 @@ exports.deleteComment = async (req, res, next) => {
       return res.status(404)
     }
 
-    if(!newsComment.author  && user.role !== 'admin' && user.role !== 'moderator') {
+    if(!newsComment.author && user.role !== 'admin' && user.role !== 'moderator') {
       req.flash('warning', 'You do not have permission to do this action.')
       return res.redirect('back')
     }

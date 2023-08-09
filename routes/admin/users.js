@@ -10,8 +10,9 @@ adminUsersRouter
   .get('/edit/:profileId', AdminUsers.editUserProfileView)
   .put('/edit/:profileId',
     newsImageUpload.single('avatar'),
-    validations.userValidator,
-    validations.handleValidation,
+    // validations.userValidator,
+    // validations.handleValidation,
     AdminUsers.editUserProfile)
+  .delete('/:profileId', AdminUsers.deleteUser)
 
 module.exports = adminUsersRouter

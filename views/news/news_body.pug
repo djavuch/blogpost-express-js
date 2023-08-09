@@ -8,13 +8,10 @@ block content
         // Post title
         h1.fw-bolder.mb-1= news.title
         // Post meta content
-        .text-muted.fst-italic.mb-2 Posted on #{news.created_on.toLocaleDateString()} by #{news.author.username}
-        // Post categories
-        a.badge.bg-secondary.text-decoration-none.link-light(href='#!') Web Design
-        a.badge.bg-secondary.text-decoration-none.link-light(href='#!') Freebies
+        .text-muted.fst-italic.mb-2 Posted on #{news.created_on.toLocaleDateString()} by #{news.author ? news.author.name : 'User deleted'}
       // Post content
       section.mb-5
-        img(src= '/' + news.previewImage)
-        p !{news.text}
+        img(src= news.previewImage)
+        p !{news.description}
         .text-muted.fst-italic.mb-2= news.views
   include ../news/comment

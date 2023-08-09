@@ -22,7 +22,7 @@ exports.newsCreateValidator = [
     .notEmpty()
     .bail()
     .withMessage('Choose category.'),
-  body('text')
+  body('description')
     .notEmpty()
     .bail()
     .withMessage('News is not empty.'),

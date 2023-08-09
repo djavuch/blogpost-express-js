@@ -24,7 +24,7 @@ const newsPostSchema = new mongoose.Schema({
     ref: "User",
     required: true
   },
-  text: {
+  description: {
     type: String,
     required: true
   },
@@ -44,7 +44,7 @@ const newsPostSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  isTopNews: {
+  isBreaking: {
     type: Boolean,
     default: false
   }
@@ -79,6 +79,10 @@ newsPostSchema
       this.text = dompurify.sanitize(this.text)
     }
   })
+  .pre('remove', function (next) {
+    const author = this
+    this.model('User').update({}, { $pull: { author: author._id }}, { safe: true }, next)
+  })
 
 newsPostSchema.methods.incrementViewsCounter = function incrementViewsCounter() {
   const news = this
@@ -94,5 +98,7 @@ newsPostSchema.methods.removeImagesWithPost = function removeImagesWithPost() {
     console.log(err)
   }
 }
+
+newsPostSchema.index({ title: 'text', description: 'text' })
 
 module.exports = mongoose.model('NewsPost', newsPostSchema)

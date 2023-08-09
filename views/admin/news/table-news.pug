@@ -30,8 +30,6 @@ block content
 					table.table
 						thead
 							tr
-								th
-									input#checkall(type='checkbox')
 								th #
 								th News title
 								th Author
@@ -44,16 +42,14 @@ block content
 						each news, index in adminNews
 							tbody
 								tr
-									td
-										input.checkthis(type='checkbox')
 									- newsCounter= 1 + index + currentPage * newsPerPage - newsPerPage
 									td= newsCounter
 									td= news.title
-									td= news.author.name || null
-									td= news.category.name || null
+									td= news.author ? news.author.name : 'User deleted'
+									td= news.category ? news.category.name : 'Category deleted'
 									td= news.created_on.toLocaleDateString()
 									td= news.updated_on.toLocaleDateString()
-									td= news.isTopNews
+									td= news.isBreaking ? 'Yes' : 'No'
 									td= news.views
 									td
 										a.button.btn.btn-primary.btn-sm.mr-1(role='button', href=`/admin/news/edit/${news._id}`) Edit
@@ -72,7 +68,7 @@ block content
 														form.d-inline(action='/admin/news/'+ news._id + '?_method=DELETE' method='POST')
 															button.btn.btn-danger(type='submit') Delete
 					// Navigation block
-					nav(aria-label='Comments navigation')
+					nav(aria-label='News navigation')
 					if pages > 1
 						ul.pagination.justify-content-center
 							if currentPage == 1

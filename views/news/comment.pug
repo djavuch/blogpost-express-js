@@ -3,33 +3,37 @@ block content
     .card.bg-light
       .card-body
         if user
-          form.mb-4(method='POST', action=`/news/${news._id}/send`)
-            textarea.form-control(rows='3' name='commentText' type='comments' placeholder='Join the discussion and leave a comment!')
-            br
-            input.btn-small.btn-primary.float-right(type='submit', value='Send')
-            br
+          if user.isVerified
+            form.mb-4(method='POST', action=`/news/${news._id}/send`)
+              textarea.form-control(rows='3' name='commentText' type='comments' placeholder='Join the discussion and leave a comment!')
+              br
+              input.btn-small.btn-primary.float-right(type='submit', value='Send')
+              br
+          else
+            p Please confirm your registration
         else
           p Please login to join discussion
         // Comment with nested block
         each comment, index_comment in news.comments
           .d-flex.mb-4
             .flex-shrink-0
-              if !comment.author.avatar
-                img.rounded-circle(src= '/assets/no-avatar.png', width='75', height='75')
-              else
+              if comment.author ? comment.author.avatar : null
                 img.rounded-circle(src= comment.author.avatar, width='75', height='75')
+              else
+                img.rounded-circle(src= '/assets/no-avatar.png', width='75', height='75')
             .ms-3
-              span.fw-bold.mr-2= comment.author.username
+              span.fw-bold.mr-2= comment.author ? comment.author.name : 'User deleted'
               span.small.text-muted= comment.created_on.toLocaleDateString()
               p= comment.commentText
                 // Comments buttons
                 .inner
                   p.parent-comment-reply
                     if user
-                      a.comment-btn.mr-2(type='button', data-toggle='collapse', data-target=`#response_${index_comment}`, aria-expanded='false', aria-controls='response')
-                        | Reply
+                      if user.isVerified
+                        a.comment-btn.mr-2(type='button', data-toggle='collapse', data-target=`#response_${index_comment}`, aria-expanded='false', aria-controls='response')
+                          | Reply
                     if user
-                      if user.id === comment.author.id || user.role === 'admin' || user.role === 'moderator'
+                      if user.id === comment.author ? comment.author.id : null || user.role === 'admin' || user.role === 'moderator'
                         a.comment-btn.mr-2(type='button', data-toggle='modal', data-target=`#editComment_${comment._id}`)
                           | Edit
                         a.comment-btn.mr-2(type='button', data-toggle='modal', data-target=`#deleteComment_${comment._id}`)

@@ -43,13 +43,13 @@ block content
                 label.control-label Email
                 input.form-control(name='email', type='email', value=profile.email)
 
-              //.form-group
-              //  label(for='selectUserRole') User role
-              //  select#selectUserRole.form-control(name='role')
-              //    option(value=(profileForAdmin.role === 'admin'), selected=(profileForAdmin.role === 'admin' ? 'selected': false)) Admin
-              //    option(value=(profileForAdmin.role === 'moderator'), selected=(profileForAdmin.role === 'moderator' ? 'selected': false)) Moderator
-              //    option(value=(profileForAdmin.role === 'journalist'), selected=(profileForAdmin.role === 'journalist' ? 'selected': false)) Journalist
-              //    option(value=(profileForAdmin.role === 'reader'), selected=(profileForAdmin.role === 'reader' ? 'selected': false)) Reader
+              .form-group
+                label(for='selectUserRole') User role
+                select#selectUserRole.form-control(name='role')
+                  option(value=(profile.role === 'admin'), selected=(profile.role === 'admin' ? 'selected': false)) Admin
+                  option(value=(profile.role === 'moderator'), selected=(profile.role === 'moderator' ? 'selected': false)) Moderator
+                  option(value=(profile.role === 'journalist'), selected=(profile.role === 'journalist' ? 'selected': false)) Journalist
+                  option(value=(profile.role === 'reader'), selected=(profile.role === 'reader' ? 'selected': false)) Reader
 
               //.form-group
               //  label.control-label Gender

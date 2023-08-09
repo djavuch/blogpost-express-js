@@ -8,11 +8,11 @@ block content
         // Post title
         h1.fw-bolder.mb-1= article.title
         // Post meta content
-        .text-muted.fst-italic.mb-2 Posted on #{article.created_on.toLocaleDateString()} by #{article.author.username}
+        .text-muted.fst-italic.mb-2 Posted on #{article.created_on.toLocaleDateString()} by #{article.author ? article.author.name : 'User deleted'}
         // Post categories
         a.badge.bg-secondary.text-decoration-none.link-light(href='#!') Web Design
         a.badge.bg-secondary.text-decoration-none.link-light(href='#!') Freebies
       // Post content
       section.mb-5
-        p !{article.text}
+        p !{article.description}
   include ../articles/comment

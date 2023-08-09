@@ -11,6 +11,7 @@ exports.listOfNews = async (req, res) => {
   try {
     const adminNews = await NewsPost.find({})
       .populate('category')
+      .populate('author')
       .limit(newsPerPage)
       .skip((page - 1) * newsPerPage)
 
@@ -38,10 +39,13 @@ exports.listOfNews = async (req, res) => {
 
 exports.addNews = async (req, res) => {
   try {
-    const post = new NewsPost(req.body)
-
-    post.author = req.user._id
-    post.isTopNews = Boolean(req.body.isTopNews)
+    const post = new NewsPost({
+      author: req.user._id,
+      category: req.body.category,
+      title: req.body.title,
+      description: req.body.description,
+      isBreaking: Boolean(req.body.isBreaking)
+    })
 
     if(req.file) {
       const dimension = await imageSize(req.file.path.replace(/\\/g,'/'))
@@ -54,12 +58,15 @@ exports.addNews = async (req, res) => {
       post.previewImage = `/uploads/news/${req.file.filename}`
     }
 
-    const posts = await NewsPost.findOne({ isTopNews: true })
-    if (posts) {
-      await NewsPost.updateMany({ isTopNews: false })
+    if (Boolean(req.body.isBreaking) === true) {
+      const findAnotherBreakingNews = await NewsPost.find({ isBreaking: { $eq: true } })
+      if (findAnotherBreakingNews) {
+        const updateFoundedPosts = { isBreaking: false}
+        await NewsPost.updateMany(updateFoundedPosts)
+      }
     }
-
     await post.save()
+
     req.flash('success', 'News added')
     return res.redirect('/admin/news')
 
@@ -75,7 +82,7 @@ exports.editNews = async (req, res) => {
     const news_data = {
       category: req.body.category,
       title: req.body.title,
-      text: req.body.text,
+      description: req.body.description,
       isTopNews: Boolean(req.body.isTopNews),
     }
 

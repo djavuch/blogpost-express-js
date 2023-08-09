@@ -1,7 +1,7 @@
 .col-1.d-flex.justify-content-end.align-items-center
   .dropdown
     if user
-      button.btn.btn-outline-dark.dropdown-toggle(type='button' data-toggle='dropdown' aria-expanded='false')= user.name
+      button.btn.btn-outline-dark.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')= user.username
       .dropdown-menu.logged
         form.px-4.py-3
           .col.mt-2
@@ -11,18 +11,20 @@
               a.dropdown-item(href="/admin") Admin panel
           .dropdown-divider
           .col.mt-2
-            a.dropdown-item(href="/users/logout") Log out
+            if !user.isVerified
+              a.dropdown-item(href='/users/confirm/resend') Resend verification email
+            a.dropdown-item(href='/users/logout') Log out
     else
-      button.btn.btn-outline-dark.dropdown-toggle(type='button' data-toggle='dropdown' aria-expanded='false')
+      button.btn.btn-outline-dark.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
         | Login
       .dropdown-menu
         form.px-4.py-3(method='POST', action='/users/signin')
           .form-group
             label(for='dropdownFormUsername') Username
-            input#dropdownFormUsername.form-control(name='username' type='username' placeholder='Username')
+            input#dropdownFormUsername.form-control(name='username', type='username', placeholder='Username')
           .form-group
             label(for='dropdownFormPassword') Password
-            input#dropdownFormPassword.form-control(name='password' type='password' placeholder='Password')
+            input#dropdownFormPassword.form-control(name='password', type='password', placeholder='Password')
           .form-group
             .form-check
               input#dropdownCheck.form-check-input(type='checkbox')

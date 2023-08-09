@@ -1,43 +1,26 @@
 aside.col-md-4.blog-sidebar
-    .p-4.mb-3.bg-light.rounded
-        h4.font-italic About
-        p.mb-0
-        | Saw you downtown singing the Blues. Watch you circle the drain. Why don't you let me stop by? Heavy is the head that 
-        em wears the crown
-        | . Yes, we make angels cry, raining down on earth from up above.
-    .p-4
-        h4.font-italic Archives
-        ol.list-unstyled.mb-0
-            li
-                a(href='#') March 2014
-            li
-                a(href='#') February 2014
-            li
-                a(href='#') January 2014
-            li
-                a(href='#') December 2013
-            li
-                a(href='#') November 2013
-            li
-                a(href='#') October 2013
-            li
-                a(href='#') September 2013
-            li
-                a(href='#') August 2013
-            li
-                a(href='#') July 2013
-            li
-                a(href='#') June 2013
-            li
-                a(href='#') May 2013
-            li
-                a(href='#') April 2013
-    .p-4
-        h4.font-italic Elsewhere
-        ol.list-unstyled
-            li
-                a(href='#') GitHub
-            li
-                a(href='#') Twitter
-            li
-                a(href='#') Facebook
+  form.form-inline.mt-2.mt-md-1(action='/search', method='GET')
+    input.form-control.col-md-9.mr-sm-2(type='text', name='results', id='search' placeholder='Search', aria-label='Search')
+    button.btn.btn-outline-secondary.my-2.my-sm-0(type='submit') Search
+  .p-4.mb-3.bg-light.rounded
+    h4.font-italic About
+    p.mb-0
+    | Saw you downtown singing the Blues. Watch you circle the drain. Why don't you let me stop by? Heavy is the head that
+    em wears the crown
+    | . Yes, we make angels cry, raining down on earth from up above.
+  .p-4
+    - monthArray = [null, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    h4.font-italic Archives
+    ol.list-unstyled.mb-0
+      each date, i in archive
+        li
+          a(href=`/news/archive/${date._id.year}/${date._id.month}`)= monthArray[date._id.month] + ' ' + date._id.year
+  .p-4
+    h4.font-italic Elsewhere
+    ol.list-unstyled
+      li
+        a(href='#') GitHub
+      li
+        a(href='#') Twitter
+      li
+        a(href='#') Facebook

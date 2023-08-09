@@ -30,8 +30,6 @@ block content
 					table.table
 						thead
 							tr
-								th
-									input#checkall(type='checkbox')
 								th #
 								th Username
 								th Register date
@@ -39,8 +37,6 @@ block content
 						each profile, index in listOfUsers
 							tbody
 								tr
-									td
-										input.checkthis(type='checkbox')
 									- usersListCounter= 1 + index + currentPage * usersPerPage - usersPerPage
 									td= usersListCounter
 									td= profile.username
@@ -56,13 +52,13 @@ block content
 														button.close(type='button', data-dismiss='modal', aria-label='Close')
 															span(aria-hidden='true') ×
 													.modal-body
-														p Are you sure you want to delete the news? This action will completely remove it from the database.
+														p Are you sure you want to delete this user? This action will completely remove it from the database.
 													.modal-footer
 														button.btn.btn-secondary(type='button') Close
-														form.d-inline(action=`/admin/users/${profile._id}?_method=DELETE`, method='POST')
+														form.d-inline(action=`/admin/users/${profile._id}?_method=DELETE`, name='id', method='POST')
 															button.btn.btn-danger(type='submit') Delete
 					// Navigation block
-					nav(aria-label='Comments navigation')
+					nav(aria-label='Users list navigation')
 					if pages > 1
 						ul.pagination.justify-content-center
 							if currentPage == 1

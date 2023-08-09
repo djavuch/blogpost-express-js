@@ -5,7 +5,9 @@ const crypto = require('crypto');
 const sendEmail = require('../../configs/email')
 
 exports.signupView = (req, res) => {
-  res.render('users/account/signup')
+  res.render('users/account/signup', {
+    title: 'Register'
+  })
 }
 
 exports.signupOnPost = async (req, res) => {
@@ -98,4 +100,43 @@ exports.verifyAccount = async (req, res) => {
   } catch (err) {
     console.log(err)
   }
+}
+
+exports.resendVerifyEmail = async (req, res) => {
+  // found user in db
+  const user = await User.findOne({ _id: req.user._id })
+
+  if(!user) {
+    req.flash('error', 'Account not found.')
+    res.redirect('back')
+  }
+  // check if user is verified
+  if(user.isVerified) {
+    req.flash('info', 'Your account is confirmed.')
+    res.redirect('back')
+  }
+  // found old token
+  const foundOldToken = await UserToken.findOne({ userId: req.user._id })
+
+  if(foundOldToken) {
+    await foundOldToken.deleteOne()
+  }
+  // generate news token
+  const token = await new UserToken({
+    userId: user._id,
+    token: crypto.randomBytes(24).toString('hex')
+  })
+
+  await token.save()
+
+  const link = `http://localhost:3000/users/confirm/${user._id}/${token.token}`
+
+  await sendEmail(user.email,
+    'Confirm registration',
+    'Hello, \n\n' +
+    `Thank you for register. Please activate your account to get access for all features ${link}. It's valid for 1 hour from the moment you receive this message. \n\n`
+  )
+
+  req.flash('success', 'Your account activation information has been sent to your email.')
+  res.redirect('/')
 }

@@ -1,38 +1,7 @@
 extends layout
 
 block content
-  .jumbotron.p-4.p-md-5.text-white.rounded(style=`background-image: url(${breaking.previewImage || null}); background-size: 100% 100%;`)
-    .col-md-6.mt-5
-      h1.display-4.font-italic= breaking.title || null
-  .row.mb-2
-    .col-md-6
-      .row.no-gutters.border.rounded.overflow-hidden.flex-md-row.mb-4.shadow-sm.h-md-250.position-relative
-        .col.p-4.d-flex.flex-column.position-static
-          strong.d-inline-block.mb-2.text-primary World
-          h3.mb-0 Featured post
-          .mb-1.text-muted Nov 12
-          p.card-text.mb-auto
-            | This is a wider card with supporting text below as a natural lead-in to additional content.
-          a.stretched-link(href='#') Continue reading
-        .col-auto.d-none.d-lg-block
-          svg.bd-placeholder-img(width='200' height='250' xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Placeholder: Thumbnail' preserveAspectRatio='xMidYMid slice' focusable='false')
-            title Placeholder
-            rect(width='100%' height='100%' fill='#55595c')
-            text(x='50%' y='50%' fill='#eceeef' dy='.3em') Thumbnail
-    .col-md-6
-      .row.no-gutters.border.rounded.overflow-hidden.flex-md-row.mb-4.shadow-sm.h-md-250.position-relative
-        .col.p-4.d-flex.flex-column.position-static
-          strong.d-inline-block.mb-2.text-success Design
-          h3.mb-0 Post title
-          .mb-1.text-muted Nov 11
-          p.mb-auto
-            | This is a wider card with supporting text below as a natural lead-in to additional content.
-          a.stretched-link(href='#') Continue reading
-        .col-auto.d-none.d-lg-block
-          svg.bd-placeholder-img(width='200' height='250' xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Placeholder: Thumbnail' preserveAspectRatio='xMidYMid slice' focusable='false')
-            title Placeholder
-            rect(width='100%' height='100%' fill='#55595c')
-            text(x='50%' y='50%' fill='#eceeef' dy='.3em') Thumbnail
+  include jumbotron
   main.conteiner(role='main')
     .row
       .col-md-4.news-block
@@ -42,7 +11,7 @@ block content
           .blog-post
             #news-meta= news.created_on.toLocaleDateString()
             a(class='blog-post-title', href=`/news/${news.slug}`)= news.title
-        if newsPerPage > 6
+        if newsPerPage > 7
           a.btn.btn-outline-primary.rounded-pill(href='/news/newswire') All news
       .col-md-4.article-block
         h3.pb-4.mb-4.font-italic.border-bottom
@@ -51,36 +20,6 @@ block content
           .blog-post
             #article-meta= article.created_on.toLocaleDateString()
             a(class='blog-post-title', href=`/articles/${article.slug}`)= article.title
-        if articlesPerPage > 6
+        if articlesPerPage > 7
           a.btn.btn-outline-primary.rounded-pill(href='/articles') All articles
       include sidebar
-
-    //- nav(aria-label='Page navigation example')
-    //-     ul.pagination.justify-content-center
-    //-         if hasPrevPage
-    //-             li.page-item
-    //-                 a.page-link(href=`/?page=${currentPage-1}`) Previous
-    //-         else
-    //-             li.page-item.disabled
-    //-                 a.page-link(href='#' tabindex='-1' aria-disabled='true') Previous
-    //-         //Previous page logic
-    //-         li.page-item
-    //-             - pageCounterBeforeCurrentPage= 0
-    //-             while pageCounterBeforeCurrentPage < currentPage - 1
-    //-                 - pageCounterBeforeCurrentPage= pageCounterBeforeCurrentPage + 1
-    //-                     li.page-item
-    //-                         a.page-link(href=`/?page=${pageCounterBeforeCurrentPage}`)= pageCounterBeforeCurrentPage
-    //-         //Current page logic
-    //-         li.page-item.active
-    //-             a.page-link(href='#')= currentPage
-    //-             - pageCounterAfterCurrentPage= currentPage
-    //-             while pageCounterAfterCurrentPage < totalPages
-    //-                 - pageCounterAfterCurrentPage= pageCounterAfterCurrentPage + 1
-    //-                     li.page-item
-    //-                         a.page-link(href=`/?page=${pageCounterAfterCurrentPage}`)= pageCounterAfterCurrentPage
-    //-         if hasNextPage
-    //-             li.page-item
-    //-                 a.page-link(href=`/?page=${currentPage+1}`) Next
-    //-         else
-    //-             li.page-item.disabled
-    //-                 a.page-link(href='#' tabindex='-1' aria-disabled='true') Next

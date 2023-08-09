@@ -2,9 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 router.use(
-  require('./auth'),
-  require('./recovery'),
-  require('./profile')
-)
+  require('./newswire'), // news core
+  require('./comments')) // news comments
 
 module.exports = router

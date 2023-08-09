@@ -42,7 +42,7 @@ block content
 									- articlesCounter= 1 + index + currentPage * articlesPerPage - articlesPerPage
 									td= articlesCounter
 									td= article.title
-									td= article.author.name
+									td= article.author ? article.author.name : 'User deleted'
 									td= article.created_on.toLocaleDateString()
 									td= article.updated_on.toLocaleDateString()
 									td
@@ -61,7 +61,7 @@ block content
 														button.btn.btn-secondary(type='button') Close
 														form.d-inline(action=`/admin/articles/${article._id}?_method=DELETE`, method='POST')
 															button.btn.btn-danger(type='submit') Delete
-			nav(aria-label='Comments navigation')
+			nav(aria-label='Article navigation')
 				if pages > 1
 					ul.pagination.justify-content-center
 						if currentPage == 1

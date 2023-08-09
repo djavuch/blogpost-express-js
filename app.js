@@ -7,7 +7,8 @@ const cookieParser = require('cookie-parser')
 const methodOverride = require('method-override')
 const connectMongooseToDB = require('./configs/database')
 const NewsCategory = require('./models/news/NewsCategoryModel')
-const { ensureAuthenticated, ensureAdmin } = require('./middleware/authorization')
+const NewsPost = require('./models/news/NewsPostModel')
+const { ensureAuthenticated, ensureAdmin } = require('./middleware/auth')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -27,7 +28,7 @@ app.use(session({
   cookie: {
     maxAge: 12 * 3600000
   },
-  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI })
+  store: MongoStore.create({mongoUrl: process.env.MONGO_URI})
 }))
 
 app.use(express.json())
@@ -52,6 +53,12 @@ app.use(methodOverride('_method'))
 app.get('*', async (req, res, next) => {
   res.locals.user = req.user || null
   res.locals.categories = await NewsCategory.find({}) || null
+  // display news archive by month
+  res.locals.archive =
+    await NewsPost.aggregate([
+      { $group:
+          { _id: { year: { $year: '$created_on' }, month: { $month: '$created_on' } } }
+      }]) || null
   next()
 })
 
@@ -61,7 +68,7 @@ app.use('/dist/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'
 app.use('/dist/umd', express.static(__dirname + '/node_modules/popper.js/dist/umd')) // popper
 app.use('/dist/jquery', express.static(__dirname + '/node_modules/jquery/dist')) // jquery
 app.use('/dist/pace-js', express.static(__dirname + '/node_modules/pace-js')) // pace-js
-app.use('/dist/fontawesome', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/css')) // fontawesome
+app.use('/dist/fontawesome', express.static(__dirname + '/node_modules/@fontawesome/fontawesome-free/css')) // fontawesome
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')))
 app.use('/assets', express.static('assets'))
 app.use('/css', express.static('css'))
@@ -71,19 +78,12 @@ app.use('/public', express.static(path.join(__dirname, 'public')))
 // Flash-express
 app.use(require('express-flash')())
 
-// Route file
-let main = require('./routes/main')
-let articles = require('./routes/articles')
-let users = require('./routes/users/usersRoute')
-let news = require('./routes/news')
-let admin = require('./routes/admin/adminRoute')
-
 // Mount routes
-app.use('/', main)
-app.use('/articles', articles)
-app.use('/users', users)
-app.use('/news', news)
-app.use('/admin', ensureAuthenticated, ensureAdmin, admin)
+app.use('/', require('./routes/mainRoute'))
+app.use('/articles', require('./routes/articles/articlesRoute'))
+app.use('/users', require('./routes/users/usersRoute'))
+app.use('/news', require('./routes/news/newsRoute'))
+app.use('/admin', ensureAuthenticated, ensureAdmin, require('./routes/admin/adminRoute'))
 
 //Error handler
 app.use((err, req, res, next) => {

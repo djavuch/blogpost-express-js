@@ -19,6 +19,9 @@ authUsersRouter
   .get('/confirm/:userId/:token',
     AuthController.verifyAccount
   )
+  // Resend verification email
+  .get('/confirm/resend',
+    AuthController.resendVerifyEmail)
   // Authentication
   .post('/signin',
     validations.singInValidator,
