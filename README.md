@@ -29,12 +29,12 @@ npm install
 
 # Create .env file in both backend and frontend directories
 # and add your environment variables
-# SESSION_SECRET= session secret key
-# MONGO_URI= mongodb pass
-# ADMIN_EMAIL= your admin email
-
-# GMAIL_EMAIL= 
-# GMAIL_PASS=
+SESSION_SECRET= session secret key
+MONGO_URI= mongodb pass
+ADMIN_EMAIL= your admin email
+## I apologize for the inconvenience, but there were no other ways to test
+GMAIL_EMAIL= google mail
+GMAIL_PASS= app password from your google account
 
 # Run the app
 nodemon
