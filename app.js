@@ -22,7 +22,7 @@ const port = 3000
 connectMongooseToDB(process.env.MONGO_URI)
 
 app.use(session({
-  secret: 'boooom',
+  secret: process.env.SESSION_SECRET
   resave: true,
   saveUninitialized: true,
   cookie: {
