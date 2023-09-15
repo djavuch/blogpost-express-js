@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node app"
   },
+  "homepage": "https://djavuch.github.io/blogpost-express-js/",
   "author": "djava",
   "license": "ISC",
   "dependencies": {
